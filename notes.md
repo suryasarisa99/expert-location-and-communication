@@ -1,0 +1,6 @@
+- search for teachers
+  - by skill
+  - by name
+- notifications page
+- teacher update page
+- teacher profile page
