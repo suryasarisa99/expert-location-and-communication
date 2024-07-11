@@ -12,7 +12,7 @@
 
 .home {
   display: flex;
-  height: 100dvh;
+  height: 100%;
   &.sm-screen {
     flex-direction: column;
 
@@ -26,13 +26,14 @@
   overflow-y: auto;
   border-radius: 8px;
 
-  &.lg-screen {
-    height: calc(100vh - 70px);
+  @include lg-screen {
+    // height: calc(100vh - 70px);
     box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
     width: 400px;
   }
-  &.sm-screen {
-    height: calc(100vh - 60px);
+  @include sm-screen {
+    // height: 100%;
+    height: calc(100dvh - 80px);
     margin: 0 0;
     flex-grow: 1;
   }
@@ -116,6 +117,7 @@
       // background-color: red;
       padding: 10px 12px;
       margin-right: 4px;
+      cursor: pointer;
     }
 
     .left {
@@ -199,39 +201,52 @@
 }
 
 .mssgs {
-  // background-color: green;
   height: calc(100dvh - 85px - 75px - 50px);
-  margin: 0 20px;
   padding-top: 20px;
-  padding-inline: 25px;
+  padding-inline: 6 5px;
   overflow-y: auto;
+  padding-bottom: 20px;
 
   display: flex;
   flex-direction: column;
   gap: 8px;
 
-  @include sm-screen() {
-    height: calc(100dvh - 75px - 50px);
-    padding-inline: 4px;
-  }
-
   .mssg {
     background-color: blue;
-    min-width: 120px;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding: 4px 16px;
+    font-size: 22px;
+    // border-radius: 12px;
+    box-shadow: 0px 0px 3px 0px rgb(0, 0, 0, 0.1);
 
     &.student-mssg {
       align-self: flex-end;
       background-color: var(--accent-too-light);
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 12px;
+      border-bottom-left-radius: 12px;
+      border-top-left-radius: 12px;
     }
     &.tutor-mssg {
       background-color: var(--accent-light);
       align-self: flex-start;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      border-bottom-left-radius: 12px;
+      border-top-left-radius: 1px;
+      text-align: right;
     }
 
     .mssg-time {
       font-size: 13px;
+    }
+  }
+
+  @include sm-screen() {
+    height: calc(100dvh - 75px - 50px);
+    padding-inline: 24px;
+    padding-bottom: 20px;
+    .mssg {
+      font-size: 18px;
     }
   }
 }

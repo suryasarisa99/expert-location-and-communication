@@ -1,0 +1,340 @@
+@mixin lg-screen {
+  @media (min-width: 769px) {
+    @content;
+  }
+}
+
+@mixin sm-screen {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+.search-page {
+  display: flex;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--chat-list-item-bg);
+
+  &.active {
+    background-color: var(--highlight);
+  }
+
+  .icon-avatar {
+    font-size: 28px;
+    height: 55px;
+    width: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--avatar-bg);
+  }
+}
+
+.search-sidebar {
+  margin: 35px 0;
+  margin-top: 25px;
+  flex-shrink: 0;
+  border-radius: 8px;
+
+  .search-list {
+    overflow-y: auto;
+    border-radius: 8px;
+
+    .search-list-item {
+      background-color: white;
+    }
+  }
+
+  @include lg-screen {
+    // height: calc(100vh - 70px);
+    // box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
+    width: 400px;
+    .search-list {
+      box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
+      height: calc(100vh - 135px);
+    }
+  }
+  @include sm-screen {
+    // height: 100%;
+    margin: 0 0;
+    margin-top: 12px;
+    flex-grow: 1;
+
+    .search-list {
+      height: calc(100dvh - 130px);
+    }
+  }
+}
+
+.search-bar {
+  margin: 0 0px;
+  position: relative;
+  margin-bottom: 20px;
+
+  input.search-input {
+    border-radius: 38px;
+    font-size: 22px;
+    padding: 12px 20px;
+    padding-left: 50px;
+    // padding-right: 32px;
+    width: 100%;
+  }
+
+  .search-bar-icon {
+    position: absolute;
+    top: 7px;
+    font-size: 22px;
+    color: gray;
+  }
+  .search-icon {
+    left: 2px;
+    padding: 2px 12px;
+    padding-top: 7px;
+    padding-left: 16px;
+    font-size: 20px;
+  }
+  .close-icon {
+    right: 2px;
+    font-size: 28px;
+    padding: 0px 3px;
+    padding-top: 2px;
+    padding-right: 8px;
+  }
+
+  @include sm-screen {
+    margin: 0 20px;
+    margin-bottom: 12px;
+    input.search-input {
+      padding: 10px 20px;
+      padding-left: 45px;
+      font-size: 18px;
+    }
+    .search-icon {
+      padding-top: 6px;
+      font-size: 16px;
+    }
+  }
+}
+
+.search-section {
+  padding: 40px;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.tutor-bio {
+  display: flex;
+  margin: 20px 20px;
+  gap: 30px;
+  align-items: center;
+
+  .tutor-avatar {
+    height: 120px;
+    width: 120px;
+    border-radius: 50%;
+    background-color: var(--avatar-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+  }
+  .tutor-name {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
+
+.tutor-skills {
+  display: flex;
+  //   background-color: green;
+  gap: 15px;
+  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(110px, 280px));
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  justify-items: center;
+  margin-top: 55px;
+  margin-bottom: 65px;
+
+  gap: 55px;
+  padding: 0 20px;
+
+  .skill {
+    padding: 8px 12px;
+    width: 100%;
+    border-radius: 6px;
+    // background-color: var(--highlight);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    .skill-name {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .pie {
+      --c: var(--accent);
+      --b: 20px;
+      //   background-color: rgb(201, 169, 169);
+      width: var(--w);
+      aspect-ratio: 1;
+      position: relative;
+      display: inline-grid;
+      place-content: center;
+      margin: 5px;
+      font-size: 25px;
+      font-weight: bold;
+      font-family: sans-serif;
+
+      &.l1 {
+        --p: 20;
+      }
+      &.l2 {
+        --p: 40;
+      }
+      &.l3 {
+        --p: 60;
+      }
+      &.l4 {
+        --p: 80;
+      }
+      &.l5 {
+        --p: 100;
+      }
+    }
+    .pie:before {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      inset: 0;
+      background: conic-gradient(var(--c) calc(var(--p) * 1%), #0000 0);
+      -webkit-mask: radial-gradient(
+        farthest-side,
+        #0000 calc(99% - var(--b)),
+        #000 calc(100% - var(--b))
+      );
+
+      mask: radial-gradient(
+        farthest-side,
+        #0000 calc(99% - var(--b)),
+        #000 calc(100% - var(--b))
+      );
+      background: radial-gradient(farthest-side, var(--c) 98%, #0000)
+          top/var(--b) var(--b) no-repeat,
+        conic-gradient(var(--c) calc(var(--p) * 1%), #0000 0);
+    }
+    .pie:after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      inset: calc(50% - var(--b) / 2);
+      background: var(--c);
+      transform: rotate(calc(var(--p) * 3.6deg))
+        translateY(calc(50% - var(--w) / 2));
+    }
+  }
+}
+
+.tutor-more-details {
+  display: flex;
+  gap: 25px;
+  h3 {
+    // font-size: ;
+    text-align: center;
+    margin: 8px 20px;
+  }
+  .details-list {
+    flex-grow: 1;
+    padding: 0 15px;
+
+    h3 {
+      margin-bottom: 35px;
+      font-size: 26px;
+    }
+
+    & > div {
+      box-shadow: 1px 1px 8px 0px rgb(0, 0, 0, 0.1);
+      margin-bottom: 4px;
+      border-radius: 8px;
+      padding: 10px 16px;
+      background-color: var(--accent-too-light);
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+      }
+      .degree,
+      .position {
+        font-size: 22px;
+      }
+    }
+  }
+}
+
+@media (max-width: 1250px) {
+  .tutor-more-details {
+    margin-top: 20px;
+    flex-direction: column;
+  }
+}
+@media (max-width: 1250px) {
+  .tutor-skills {
+    grid-template-columns: repeat(3, minmax(120px, 300px));
+  }
+}
+
+@include sm-screen() {
+  .search-section {
+    padding: 20px 20px;
+    height: 100dvh;
+  }
+  .tutor-bio {
+    .tutor-avatar {
+      width: 55px;
+      height: 55px;
+      font: 22px;
+    }
+  }
+  .tutor-skills {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 22px;
+    margin-top: 40px;
+    margin-bottom: 22px;
+
+    .skill {
+      padding: 0px 20px;
+      .pie {
+        --b: 12px;
+        font-size: 20px;
+      }
+      .skill-name {
+        font-size: 18px;
+        font-weight: 500;
+      }
+    }
+  }
+  .tutor-more-details {
+    margin-top: 20px;
+    flex-direction: column;
+
+    .details-list {
+      width: 100%;
+      margin-top: 25px;
+
+      h3 {
+        margin-bottom: 25px;
+      }
+    }
+  }
+}

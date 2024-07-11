@@ -21,7 +21,7 @@ export default function BasicSignup({
   setCommonData,
 }: BasicSignupProps) {
   return (
-    <div className="signup-basic">
+    <div className="signup-basic auth">
       <input
         type="text"
         name="name"
@@ -37,7 +37,7 @@ export default function BasicSignup({
         onChange={(e) => setCommonData({ ...commonData, age: e.target.value })}
       />
       <div>
-        <p className="gender-title">What is your Role ?</p>
+        <p className="role-title">What is your Role ?</p>
         <label className="option" htmlFor="role-student">
           <p>Student</p>
           <input

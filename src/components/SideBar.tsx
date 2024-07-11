@@ -2,7 +2,7 @@ import React from "react";
 import { RiMessage3Fill, RiMessage3Line } from "react-icons/ri";
 import { AiFillNotification, AiOutlineNotification } from "react-icons/ai";
 import { IoSettingsOutline, IoSettings, IoSearchSharp } from "react-icons/io5";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type SideBarProps = {
   isLgScreen: boolean;
@@ -10,6 +10,7 @@ type SideBarProps = {
 
 export default function SideBar({ isLgScreen }: SideBarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     {
@@ -41,7 +42,13 @@ export default function SideBar({ isLgScreen }: SideBarProps) {
   return (
     <div className={"side-bar " + (isLgScreen ? "lg-screen" : "sm-screen")}>
       {navItems.map((item, index) => (
-        <div key={index} className="nav-item">
+        <div
+          key={index}
+          className="nav-item"
+          onClick={() => {
+            navigate(item.path);
+          }}
+        >
           {location.pathname.startsWith(item.path) ? (
             <div className="active icon-outer">
               <item.activeIcon />

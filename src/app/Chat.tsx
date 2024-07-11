@@ -34,7 +34,7 @@ export default function Chat() {
       {(isLgScreen ||
         (!isLgScreen && location.pathname.replaceAll("/", "") === "chat")) && (
         <>
-          <SideBar isLgScreen={isLgScreen} />
+          {/* <SideBar isLgScreen={isLgScreen} /> */}
           <ChatList
             selectChat={(chatId) => {
               if (location.pathname === "/chat") navigate("/chat/" + chatId);
