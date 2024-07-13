@@ -21,6 +21,6 @@
       "@public/*": ["./public/*"]
     }
   },
-  "include": ["vite.config.ts", "src/**/*"],
+  "include": ["vite.config.ts", "src/**/*", "firebase.ts"],
   "exclude": ["node_modules", "**/node_modules/*"]
 }

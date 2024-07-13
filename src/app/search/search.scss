@@ -15,12 +15,34 @@
 }
 
 .search-item {
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  justify-content: space-between;
   display: flex;
   align-items: center;
-  gap: 15px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
   background-color: var(--chat-list-item-bg);
+
+  button {
+    background-color: var(--accent-dark);
+    color: var(--on-accent);
+    font-weight: 600;
+    border-radius: 40px;
+    font-size: 14px;
+    min-width: 85px;
+    padding: 7px 12px;
+
+    &.accepted {
+      background-color: var(--accent-light);
+      color: var(--txt-clr);
+      font-weight: 500;
+      font-size: 13px;
+    }
+  }
 
   &.active {
     background-color: var(--highlight);
@@ -133,7 +155,48 @@
 .tutor-bio {
   display: flex;
   margin: 20px 20px;
-  gap: 30px;
+  gap: 25px;
+  // justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+
+  .tutor-details {
+    flex-grow: 1;
+  }
+
+  .tutor-location {
+    background-color: var(--highlight);
+    padding: 7px;
+    border-radius: 8px;
+
+    padding-top: 8px;
+    padding-left: 11px;
+    padding-right: 10px;
+    padding-bottom: 0px;
+
+    font-size: 28px;
+  }
+
+  button {
+    background-color: var(--accent-dark);
+    color: var(--on-accent);
+    font-weight: 600;
+    border-radius: 35px;
+    padding: 8px 30px;
+    // width: 250px;
+    width: 80%;
+    max-width: 300px;
+    flex-grow: 1;
+  }
+
+  .bottom-row {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    margin-top: 15px;
+    // background-color: gray;
+    flex-grow: 1;
+  }
   align-items: center;
 
   .tutor-avatar {
@@ -147,11 +210,16 @@
     font-size: 34px;
   }
   .tutor-name {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
   }
 }
 
+.skills-heading {
+  font-size: 28px;
+  text-align: center;
+  margin-top: 40px;
+}
 .tutor-skills {
   display: flex;
   //   background-color: green;
@@ -163,7 +231,7 @@
   align-content: center;
   align-items: center;
   justify-items: center;
-  margin-top: 55px;
+  margin-top: 35px;
   margin-bottom: 65px;
 
   gap: 55px;
@@ -307,9 +375,9 @@
     }
   }
   .tutor-skills {
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     gap: 22px;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 22px;
 
     .skill {

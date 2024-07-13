@@ -6,7 +6,9 @@ import React, {
   useRef,
 } from "react";
 import { useLocation, useNavigate, useNavigation } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
+import { FaSearch, FaUser } from "react-icons/fa";
+import useData from "@hooks/useData";
+import { motion } from "framer-motion";
 
 type ChatListProps = {
   isLgScreen: boolean;
@@ -25,54 +27,65 @@ export default function ChatList({
   const location = useLocation();
   const scrollDivRef = useRef<HTMLDivElement>(null);
   const [userId, setUserId] = useState("");
+  const { data, role, currentTutor } = useData();
 
-  console.log(userId);
   useEffect(() => {
     setUserId(location.pathname.split("/")[2]);
   }, [location.pathname]);
 
   useLayoutEffect(() => {
-    console.log(" in layout effect");
-    if (!scrollDivRef.current) {
-      console.log("scroll skipped");
-      return;
-    }
-    console.log("may be scrolled");
+    if (!scrollDivRef.current) return;
+
     scrollDivRef.current.scrollTo({ top: scrollAmount });
     return () => {
-      console.log(scrollDivRef.current?.scrollTop);
       setScrollAmount(scrollDivRef.current?.scrollTop || 0);
     };
   }, []);
 
   return (
-    <div
-      className={"chat-list " + (isLgScreen ? "lg-screen" : "sm-screen")}
-      ref={scrollDivRef}
-    >
-      {Array.from({ length: 50 }).map((_, i) => {
-        return (
-          <div
-            key={i}
-            onClick={() => selectChat(i.toString())}
-            className={
-              "chat-list-item " + (userId === i.toString() ? "active" : "")
-            }
-          >
-            {/* <img src="" alt={`profile-img-${i}`} /> */}
-            <div className="icon-outer">
-              <FaUser />
-            </div>
-            <div className="chat-item-column">
-              <div className="top-row">
-                <p className="user-name"> User {i}</p>
-                <p className="time">12:00</p>
+    <div className="chat-sidebar">
+      <div className="chat-header">
+        <div className="title">
+          @{role == 1 ? data?._id : currentTutor?._id}
+        </div>
+        <div className="search-icon">
+          <FaSearch />
+        </div>
+      </div>
+      <div
+        className={"chat-list " + (isLgScreen ? "lg-screen" : "sm-screen")}
+        ref={scrollDivRef}
+      >
+        {(role == 1
+          ? data?.tutors
+          : currentTutor?.requests?.filter((x) => x.status == "accepted")
+        )?.map((user, i) => {
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.1 }}
+              key={i}
+              onClick={() => selectChat(user._id)}
+              className={
+                "chat-list-item " + (userId === user._id ? "active" : "")
+              }
+            >
+              {/* <img src="" alt={`profile-img-${i}`} /> */}
+              <div className="icon-outer">
+                <FaUser />
               </div>
-              <p className="last-mssg">This is the Last Message {i}</p>
-            </div>
-          </div>
-        );
-      })}
+              <div className="chat-item-column">
+                <div className="top-row">
+                  <p className="user-name">{user.name}</p>
+                  {/* <p className="time">{user.lastTime}</p> */}
+                </div>
+                <p className="last-mssg">@{user._id}</p>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }

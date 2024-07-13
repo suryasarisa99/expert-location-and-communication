@@ -3,7 +3,8 @@ import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 type PasswordInputProps = {
   value: string;
-  onChange: React.Dispatch<React.SetStateAction<string>>;
+  // onChange: React.Dispatch<React.SetStateAction<string>>;
+  onChange: (value: string) => void;
   placeholder?: string;
 };
 

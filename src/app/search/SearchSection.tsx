@@ -1,14 +1,16 @@
+import useData from "@hooks/useData";
+import { TutorType } from "@src/types/StudentType";
+import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
 import { FaUser } from "react-icons/fa";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { MdShareLocation } from "react-icons/md";
 export default function SearchSection() {
   const skillRefs = useRef<HTMLDivElement[]>([]);
-  //   const skillRefs = Array.from({ length: 4 }).map(() =>
-  //     React.createRef<HTMLDivElement>()
-  //   );
+  const navigate = useNavigate();
   const { id } = useParams();
-
+  const [tutorData, setTutorData] = useState<TutorType | null>(null);
+  const { tutors } = useData();
   useEffect(() => {
     console.log("search section mounted");
     function setWidthSkillPieChart() {
@@ -18,72 +20,22 @@ export default function SearchSection() {
       });
     }
 
-    setWidthSkillPieChart();
+    axios.get(`${import.meta.env.VITE_SERVER}/user/tutor/${id}`).then((res) => {
+      console.log(res.data);
+      setTutorData(res.data);
+      setTimeout(() => {
+        setWidthSkillPieChart();
+      }, 20);
+    });
+
     window.addEventListener("resize", setWidthSkillPieChart);
     return () => {
       console.log("search section unmounted");
       window.removeEventListener("resize", setWidthSkillPieChart);
     };
-  }, []);
+  }, [id]);
 
-  const teacherData = {
-    name: "Jaya Surya",
-    bio: "Something",
-    username: "jaya_surya",
-    location: "location",
-    skills: [
-      {
-        name: "Python",
-        level: 4,
-      },
-      {
-        name: "Java",
-        level: 3,
-      },
-      {
-        name: "C++",
-        level: 5,
-      },
-      {
-        name: "JavaScript",
-        level: 4,
-      },
-    ],
-    education: [
-      {
-        degree: "B.Tech",
-        institution: "IIT",
-        year: "2019",
-      },
-      {
-        degree: "M.Tech",
-        institution: "IIT",
-        year: "2021",
-      },
-      {
-        degree: "Ph.D",
-        institution: "IIT",
-        year: "2023",
-      },
-    ],
-    workExperience: [
-      {
-        position: "Software Developer",
-        company: "Google",
-        year: "2019-2021",
-      },
-      {
-        position: "Software Developer",
-        company: "Microsoft",
-        year: "2021-2023",
-      },
-      {
-        position: "Tutorial Assistant",
-        company: "IIT",
-        year: "2023-2025",
-      },
-    ],
-  };
+  if (!tutorData) return null;
 
   return (
     <div className="search-section chat-section">
@@ -92,15 +44,37 @@ export default function SearchSection() {
           <FaUser />
         </div>
         <div className="tutor-details">
-          <p className="tutor-name">{teacherData.name}</p>
-          <p className="tutor-username">
-            @{teacherData.username}- {id}
-          </p>
-          <p className="tutor-location"></p>
+          <p className="tutor-name">{tutorData.name}</p>
+          <p className="tutor-username">@{tutorData._id}</p>
+          <div className="bottom-row">
+            <button
+              onClick={() => {
+                const status = tutors.find((x) => x._id == id)
+                  ?.status as string;
+                if (status == "accepted") navigate("/chat/" + id);
+                else if (status == "rejected")
+                  alert("Tutor has rejected your request");
+                else if (status == "pending")
+                  alert("Tutor has not accepted your request");
+                else alert("send request to tutor");
+              }}
+            >
+              {{
+                accepted: "Message",
+                pending: "Pending",
+                rejected: "Rejected",
+                "-": "Follow",
+              }[tutors.find((x) => x._id == id)?.status as string] || "Follow"}
+            </button>
+            <p className="tutor-location">
+              <MdShareLocation />
+            </p>
+          </div>
         </div>
       </div>
+      <h3 className="skills-heading">Skills</h3>
       <div className="tutor-skills">
-        {teacherData.skills.map((skill, i) => (
+        {tutorData.skills.map((skill, i) => (
           <div
             className="skill"
             key={i}
@@ -118,24 +92,28 @@ export default function SearchSection() {
       <div className="tutor-more-details">
         <div className="tutor-work-exp details-list">
           <h3>Work Experience</h3>
-          {teacherData.workExperience.map((exp, i) => (
+          {tutorData.workExperiences.map((exp, i) => (
             <div className="work-exp" key={i}>
               <p className="position">{exp.position}</p>
               <div className="row">
                 <p className="company">{exp.company}</p>
-                <p className="year">{exp.year}</p>
+                <p className="year">
+                  {exp.from}-{exp.to}
+                </p>
               </div>
             </div>
           ))}
         </div>
         <div className="tutor-education details-list">
           <h3>Education</h3>
-          {teacherData.education.map((edu, i) => (
+          {tutorData.educations.map((edu, i) => (
             <div className="education" key={i}>
               <p className="degree">{edu.degree}</p>
               <div className="row">
-                <p className="institution">{edu.institution}</p>
-                <p className="year">{edu.year}</p>
+                <p className="institution">{edu.institute}</p>
+                <p className="year">
+                  {edu.from}-{edu.to}
+                </p>
               </div>
             </div>
           ))}

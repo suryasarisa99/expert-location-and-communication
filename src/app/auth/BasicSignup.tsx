@@ -1,19 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { CommonSignupDataType } from "./Signup";
 
 type BasicSignupProps = {
-  commonData: {
-    name: string;
-    age: string;
-    role: string;
-  };
-  setCommonData: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      age: string;
-      role: string;
-    }>
-  >;
+  commonData: CommonSignupDataType;
+  setCommonData: React.Dispatch<React.SetStateAction<CommonSignupDataType>>;
 };
 
 export default function BasicSignup({

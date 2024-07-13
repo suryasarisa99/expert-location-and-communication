@@ -8,6 +8,11 @@ import Signin from "@app/auth/Signin";
 import SideBar from "@components/SideBar";
 import SearchPage from "@app/search/SearchPage";
 import Notifications from "@app/Notifications";
+import ImageCrop from "@components/ImageCrop";
+import ImageCrop2 from "@components/ImageCrop2";
+import ProfilePage from "@app/profile/ProfilePage";
+import UploadPage from "@app/upload/UploadPage";
+import Posts from "@app/Posts";
 
 export default function App() {
   const largeScreenSize = 768;
@@ -27,17 +32,23 @@ export default function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const isAuthScreens =
-    location.pathname === "/" || location.pathname === "/signin";
+  const NegltedScreens = ["/", "/signin", "/image-crop"];
+
+  const isNegletedScreen = NegltedScreens.includes(location.pathname);
   const isSmallScreenAndNotSelectedChat =
     !isLgScreen &&
-    ["/chat", "/search", "/notifications", "/settings"].includes(
-      location.pathname
-    );
+    [
+      "/chat",
+      "/search",
+      "/notifications",
+      "/settings",
+      "/upload",
+      "/posts",
+    ].includes(location.pathname);
 
   return (
     <div className="app">
-      {!isAuthScreens && (isLgScreen || isSmallScreenAndNotSelectedChat) && (
+      {!isNegletedScreen && (isLgScreen || isSmallScreenAndNotSelectedChat) && (
         <SideBar isLgScreen={isLgScreen} />
       )}
       <div className="routes">
@@ -46,10 +57,14 @@ export default function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/chat/*" element={<Chat />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/posts" element={<Posts />} />
+          {/* <Route path="/image-crop" element={<ImageCrop2 />} /> */}
           <Route
             path="/search/*"
             element={<SearchPage isLgScreen={isLgScreen} />}
           />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </div>
     </div>
