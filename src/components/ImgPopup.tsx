@@ -11,7 +11,7 @@ type PopupProps = {
   className?: string;
 };
 
-export default function Popup({
+export default function ImgPopup({
   show,
   handleClose,
   closeOnEscape = true,
@@ -65,11 +65,7 @@ export default function Popup({
   return (
     <div className="popup">
       <AnimatePresence>
-        {show &&
-          createPortal(
-            <div className={"popup-box  " + className}>{children}</div>,
-            document.querySelector("#overlay")!
-          )}
+        {show && <div className={"popup-box  " + className}>{children}</div>}
       </AnimatePresence>
     </div>
   );

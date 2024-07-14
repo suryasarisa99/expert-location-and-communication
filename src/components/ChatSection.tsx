@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { TbDotsVertical } from "react-icons/tb";
-import { FaUser, FaChevronLeft } from "react-icons/fa";
+import { FaUser, FaChevronLeft, FaUserTie } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import axios from "axios";
 import useData from "@hooks/useData";
@@ -191,7 +191,7 @@ export default function ChatSection() {
               navigate(`/chat/${id}/profile`);
             }}
           >
-            <FaUser />
+            {role == 1 ? <FaUserTie /> : <FaUser />}
           </div>
           <p className="chat-name">{id}</p>
         </div>

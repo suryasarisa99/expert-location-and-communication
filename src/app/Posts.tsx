@@ -2,9 +2,9 @@ import useData from "@hooks/useData";
 import getFileImg from "@utils/getFileIcon";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaUser } from "react-icons/fa";
+import { FaUserTie } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import { MdDownload } from "react-icons/md";
 export default function Posts() {
   type PostType = {
     username: string;
@@ -45,7 +45,7 @@ export default function Posts() {
             <div key={post._id} className={`post ${isImg ? "img" : "file"}`}>
               <div className="post-top-bar">
                 <div className="icon-avatar">
-                  <FaUser />
+                  <FaUserTie />
                 </div>
                 <p
                   onClick={() => {
@@ -65,14 +65,28 @@ export default function Posts() {
               {isImg ? (
                 <img src={post.url} alt="" />
               ) : (
-                <div className="file-preview">
-                  <div className="file-icon">
-                    <img src={getFileImg(post.type, post.ext)} alt="" />
+                <div
+                  className="file-preview"
+                  onClick={() => {
+                    window.open(post.url, "_blank");
+                  }}
+                >
+                  <div className="left">
+                    <div className="file-icon">
+                      <img src={getFileImg(post.type, post.ext)} alt="" />
+                    </div>
+                    <div className="file-details">
+                      <p className="file-name">{post.filename}</p>
+                      <p className="file-size">{post.size / 1000} kb</p>
+                    </div>
                   </div>
-                  <div className="file-details">
-                    <p className="file-name">{post.filename}</p>
-                    <p className="file-size">{post.size / 1000} kb</p>
-                  </div>
+                  <a
+                    className="download-icon"
+                    href={post.url}
+                    download={post.filename}
+                  >
+                    <MdDownload />
+                  </a>
                 </div>
               )}
               <p className="caption">{post.caption}</p>

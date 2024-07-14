@@ -57,6 +57,12 @@
     align-items: center;
     justify-content: center;
     background-color: var(--avatar-bg);
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
   }
 }
 

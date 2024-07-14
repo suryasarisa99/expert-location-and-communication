@@ -14,25 +14,14 @@ import SearchSection from "./search/SearchSection";
 import Popup from "@components/Popup";
 import useData from "@hooks/useData";
 
-export default function Chat() {
+export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
   const largeScreenSize = 768;
   const location = useLocation();
-  const [isLgScreen, setIsLgScreen] = useState(
-    window.innerWidth > largeScreenSize
-  );
+
   const chatListScrollRef = useRef(0.0);
   const navigate = useNavigate();
   const [popup, setPopup] = useState(false);
   const { role } = useData();
-
-  useEffect(() => {
-    function handleResize() {
-      setIsLgScreen(window.innerWidth > largeScreenSize);
-    }
-    // if (role == -1) navigate("/signin");
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <div className={"home " + (isLgScreen ? "lg-screen" : "sm-screen")}>
@@ -61,7 +50,6 @@ export default function Chat() {
       {(isLgScreen ||
         (!isLgScreen && location.pathname.replaceAll("/", "") === "chat")) && (
         <>
-          {/* <SideBar isLgScreen={isLgScreen} /> */}
           <ChatList
             selectChat={(chatId) => {
               if (location.pathname === "/chat") navigate("/chat/" + chatId);

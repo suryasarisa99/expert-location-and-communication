@@ -1,23 +1,23 @@
-import csvImg from "/public/icons/csv.png";
-import textImg from "/public/icons/txt-l1.png";
-import pdfImg from "/public/icons/pdf.png";
-import docImg from "/public/icons/doc.png";
-import zipImg from "/public/icons/zip.png";
-import xlsImg from "/public/icons/xls.png";
-import keyImg from "/public/icons/key.png";
-import pptImg from "/public/icons/ppt.png";
-import markdownImg from "/public/icons/md.png";
-import jsImg from "/public/icons/js.png";
-import pythonImg from "/public/icons/python.png";
-import jsonImg from "/public/icons/json.png";
-import torrentImg from "/public/icons/torrent.png";
-import yamlImg from "/public/icons/yaml.png";
-import binaryImgImg from "/public/icons/binary.png";
-import javaImg from "/public/icons/java.png";
-import htmlImg from "/public/icons/html.png";
-import cssImg from "/public/icons/css.png";
-import rarImg from "/public/icons/rar.png";
-import unknownImg from "/public/icons/unknown.png";
+import csvImg from "/icons/csv.png";
+import textImg from "/icons/txt-l1.png";
+import pdfImg from "/icons/pdf.png";
+import docImg from "/icons/doc.png";
+import zipImg from "/icons/zip.png";
+import xlsImg from "/icons/xls.png";
+import keyImg from "/icons/key.png";
+import pptImg from "/icons/ppt.png";
+import markdownImg from "/icons/md.png";
+import jsImg from "/icons/js.png";
+import pythonImg from "/icons/python.png";
+import jsonImg from "/icons/json.png";
+import torrentImg from "/icons/torrent.png";
+import yamlImg from "/icons/yaml.png";
+import binaryImgImg from "/icons/binary.png";
+import javaImg from "/icons/java.png";
+import htmlImg from "/icons/html.png";
+import cssImg from "/icons/css.png";
+import rarImg from "/icons/rar.png";
+import unknownImg from "/icons/unknown.png";
 
 export default function getFileImg(type: string, ext: string) {
   let img = "";
@@ -73,7 +73,7 @@ export default function getFileImg(type: string, ext: string) {
       img = yamlImg;
       break;
     case "bin":
-    case "bianary":
+    case "binary":
       img = binaryImgImg;
       break;
     case "java":

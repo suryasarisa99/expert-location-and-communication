@@ -251,6 +251,26 @@ input[type="checkbox"] {
   }
 }
 
+.profile-pic-popup {
+  // top: 20%;
+  // top: 0;
+  // left: 0;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  box-shadow: none;
+  border: none;
+  width: fit-content;
+  width: 100%;
+  img {
+    border-radius: 8px;
+    width: 90%;
+  }
+
+  .profile-pic {
+  }
+}
+
 //@image-edit
 
 .chat-section {
@@ -406,5 +426,24 @@ input[type="checkbox"] {
         width: 100vw;
       }
     }
+  }
+}
+
+progress {
+  width: 95%;
+  color: green;
+  height: 8px;
+  border: 1px solid var(--accent-light);
+  border-radius: 8px;
+  background-color: transparent;
+  accent-color: var(--accent-light);
+
+  &::-webkit-progress-bar {
+    background-color: var(--accent-too-light);
+    border-radius: 16px;
+  }
+  &::-webkit-progress-value {
+    background-color: var(--accent-md);
+    border-radius: 16px;
   }
 }

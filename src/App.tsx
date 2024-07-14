@@ -44,6 +44,7 @@ export default function App() {
       "/settings",
       "/upload",
       "/posts",
+      "/profile",
     ].includes(location.pathname);
 
   return (
@@ -55,7 +56,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/chat/*" element={<Chat />} />
+          <Route path="/chat/*" element={<Chat isLgScreen={isLgScreen} />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/posts" element={<Posts />} />
@@ -64,7 +65,10 @@ export default function App() {
             path="/search/*"
             element={<SearchPage isLgScreen={isLgScreen} />}
           />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route
+            path="/profile"
+            element={<ProfilePage isLgScreen={isLgScreen} />}
+          />
         </Routes>
       </div>
     </div>

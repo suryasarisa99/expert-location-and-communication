@@ -12,6 +12,7 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 import axios from "axios";
 import getFileImg from "@utils/getFileIcon";
+import Popup from "@components/Popup";
 
 export default function UploadPage() {
   const [dragOver, setDragOver] = useState(false);
@@ -20,6 +21,8 @@ export default function UploadPage() {
   const { selectedFile, setSelectedFile } = useData();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [caption, setCaption] = useState("");
+  const [progress, setProgress] = useState(-1);
+  const timerRef = useRef<number>(-1);
   const [fileDetails, setFileDetails] = useState({
     name: "",
     ext: "",
@@ -27,7 +30,11 @@ export default function UploadPage() {
     size: 0,
     type: "",
   });
-
+  const [error, setError] = useState({
+    title: "",
+    mssg: "",
+  });
+  const [showPopup, setShowPopup] = useState(false);
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -100,18 +107,44 @@ export default function UploadPage() {
     // if (fileDetails.isImg) {
     //   setIsCropping(true);
     // } else {
+    if (!caption || !selectedFile) {
+      setShowPopup(true);
+      setError({
+        title: "All fields are required",
+        mssg: "Please select a file and enter a caption",
+      });
+      return;
+    }
     const fileBlob = await (await fetch(selectedFile as string)).blob();
     const storgeRef = ref(storage, `posts/${Date.now()}-${fileDetails.name}`);
+    if (fileDetails.size < 400000)
+      timerRef.current = window.setInterval(() => {
+        setProgress((prv) => {
+          if (prv == 100) {
+            clearInterval(timerRef.current);
+            return -1;
+          }
+          if (prv + 10 <= 70) return Math.max(prv + 10, prv);
+          else {
+            clearInterval(timerRef.current);
+            return prv;
+          }
+        });
+      }, 150);
     uploadBytesResumable(storgeRef, fileBlob).on(
       "state_changed",
       (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(progress);
+        const p = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(Math.max(p - 10, 0));
+        console.log("Upload is " + p + "% done");
       },
       (error) => {},
       async () => {
+        window.setTimeout(() => {
+          setProgress(95);
+        }, 80);
         const url = await getDownloadURL(storgeRef);
+
         axios.post(
           `${import.meta.env.VITE_SERVER}/posts/upload/`,
           {
@@ -126,6 +159,21 @@ export default function UploadPage() {
             withCredentials: true,
           }
         );
+        window.setTimeout(() => {
+          setProgress(100);
+          window.setTimeout(() => {
+            setProgress(-1);
+          }, 150);
+        }, 120);
+        setSelectedFile("");
+        setImgSelected(false);
+        setFileDetails({
+          name: "",
+          ext: "",
+          isImg: false,
+          size: 0,
+          type: "",
+        });
       }
     );
     // }
@@ -133,7 +181,24 @@ export default function UploadPage() {
 
   return (
     <div className={`upload-page ${dragOver ? "drag-over" : ""}`}>
-      {/* {!imgSelected && ( */}
+      <Popup
+        show={showPopup}
+        closeOnEscape={true}
+        closeOnClickOutside={true}
+        handleClose={() => setShowPopup(false)}
+        className="basic-popup"
+      >
+        <div>
+          <div className="title">{error.title}</div>
+          <div className="mssg">{error.mssg}</div>
+          <div className="actions">
+            <button className="primary" onClick={() => setShowPopup(false)}>
+              Ok
+            </button>
+          </div>
+        </div>
+      </Popup>
+      {progress != -1 && <progress value={progress} max={100}></progress>}
       <div className="upload-container">
         <div
           className={`upload-area ${dragOver ? "drag-over" : ""}`}

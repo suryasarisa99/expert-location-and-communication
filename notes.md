@@ -2,6 +2,13 @@
   - by skill
   - by name
   - by location
-- notifications page
+- notifications page for students
 - teacher update page
 - teacher profile page
+
+- add a crop and file upload and progress bar in upload page
+- make functionality to search bars
+- click on images in messages and posts to view them in full screen
+- make text box to be grow like chatgpt
+- bottom bar in chat while in croping section in large screen
+- better chat layout ( instead as seperated look components in lg screen)
