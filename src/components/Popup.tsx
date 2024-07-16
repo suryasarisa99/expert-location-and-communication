@@ -64,13 +64,11 @@ export default function Popup({
 
   return (
     <div className="popup">
-      <AnimatePresence>
-        {show &&
-          createPortal(
-            <div className={"popup-box  " + className}>{children}</div>,
-            document.querySelector("#overlay")!
-          )}
-      </AnimatePresence>
+      {show &&
+        createPortal(
+          <div className={"popup-box  " + className}>{children}</div>,
+          document.querySelector("#overlay")!
+        )}
     </div>
   );
 }

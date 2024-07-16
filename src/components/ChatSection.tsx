@@ -16,6 +16,7 @@ import {
 } from "firebase/storage";
 import { BiLogoBootstrap } from "react-icons/bi";
 import ImageCrop2 from "./ImageCrop2";
+import { socket } from "@context/Data/DataContext";
 
 export default function ChatSection() {
   const { id } = useParams();
@@ -57,6 +58,17 @@ export default function ChatSection() {
         setMessages(res.data.messages);
       });
   }, [id]);
+
+  useEffect(() => {
+    socket.on("new-mssg", (mssg) => {
+      console.log("mssg from socket: ", mssg);
+      if (mssg.from == id) setMessages((prv) => [...prv, mssg]);
+    });
+
+    return () => {
+      socket.off("new-mssg");
+    };
+  }, []);
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -126,7 +138,7 @@ export default function ChatSection() {
           }, 150);
         }, 120);
         const downloadURL = await getDownloadURL(storageRef);
-        handleSendMessage(caption, downloadURL, true).then((res) => {});
+        handleSendMessage(caption, downloadURL, true);
       }
     );
   }
@@ -147,17 +159,23 @@ export default function ChatSection() {
         },
       ]);
 
-    return axios.post(
-      `${import.meta.env.VITE_SERVER}/user/mssg`,
-      {
-        to: id,
-        mssg: newMssg,
-        img: imgUrl,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    // return axios.post(
+    //   `${import.meta.env.VITE_SERVER}/user/mssg`,
+    //   {
+    //     to: id,
+    //     mssg: newMssg,
+    //     img: imgUrl,
+    //   },
+    //   {
+    //     withCredentials: true,
+    //   }
+    // );
+
+    socket.emit("new-mssg", {
+      to: id,
+      mssg: newMssg,
+      img: imgUrl,
+    });
   }
 
   async function onMssgSubmit(e: FormEvent) {

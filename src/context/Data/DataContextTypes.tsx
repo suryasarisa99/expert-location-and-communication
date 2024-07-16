@@ -8,8 +8,8 @@ import React from "react";
 type DataContextTypes = {
   data: StudentType | null;
   setData: React.Dispatch<React.SetStateAction<StudentType | null>>;
-  tutors: TutorSearchType[];
-  setTutors: React.Dispatch<React.SetStateAction<TutorSearchType[]>>;
+  users: TutorSearchType[];
+  setUsers: React.Dispatch<React.SetStateAction<TutorSearchType[]>>;
   currentTutor: TutorType | null;
   setCurrentTutor: React.Dispatch<React.SetStateAction<TutorType | null>>;
   role: number;

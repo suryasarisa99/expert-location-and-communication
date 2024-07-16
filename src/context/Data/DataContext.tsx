@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createContext, useReducer } from "react";
+import Io from "socket.io-client";
 import DataContextType from "./DataContextTypes";
 import DataContextTypes from "./DataContextTypes";
 import {
@@ -9,6 +10,11 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+console.log(import.meta.env.VITE_SERVER);
+export const socket = Io(import.meta.env.VITE_SERVER, {
+  path: "/socket.io/",
+  withCredentials: true,
+});
 export const DataContext = createContext({} as DataContextType);
 export default function DataProvider({
   children,
@@ -17,14 +23,65 @@ export default function DataProvider({
 }) {
   const [data, setData] = useState<StudentType | null>(null);
   const [currentTutor, setCurrentTutor] = useState<TutorType | null>(null);
-  const [tutors, setTutors] = useState<TutorSearchType[]>([]);
-  const [tutorData, setTutorData] = useState<TutorSearchType[]>([]);
+  const [users, setUsers] = useState<TutorSearchType[]>([]);
   const [selectedFile, setSelectedFile] = useState<string | undefined>();
 
   const navigate = useNavigate();
   const [role, setRole] = useState(-1);
 
   useEffect(() => {
+    socket.on("follow-req", (data) => {
+      console.log("folow-req recived : ", data);
+      setUsers((prv) => {
+        return [...prv, data];
+      });
+    });
+    socket.on("accept-req", (data) => {
+      console.log(" accept req from socketio: ", data);
+      setUsers((prv) => {
+        return prv.map((x) => {
+          if (x._id == data._id) return { ...x, status: data.status };
+          return x;
+        });
+      });
+    });
+  }, []);
+
+  // useEffect(() => {
+  //   if (role == -1) return;
+
+  //   socket.on("accept-req", (data) => {
+  //     console.log("accept req: ", data);
+  //     if (role == 0) {
+  //       setCurrentTutor((prv) => {
+  //         if (!prv) return prv;
+  //         else
+  //           return {
+  //             ...prv,
+  //             requests: prv.requests.map((x) => {
+  //               if (x._id == data._id) return { ...x, status: data.status };
+  //               return x;
+  //             }),
+  //           };
+  //       });
+  //     } else if (role == 1) {
+  //       setTutors((prv) => {
+  //         return prv.map((x) => {
+  //           if (x._id == data._id) return { ...x, status: data.status };
+  //           return x;
+  //         });
+  //       });
+  //     }
+  //   });
+  //   return () => {
+  //     socket.off("accept-req");
+  //   };
+  // }, [role]);
+
+  useEffect(() => {
+    socket.on("new-std", (data: TutorSearchType) => {
+      console.log("from socketio: ", data);
+    });
     if (localStorage.getItem("loggedIn")) {
       let location = window.location.pathname;
       if (["/", "/signin"].includes(location)) location = "/chat";
@@ -39,10 +96,11 @@ export default function DataProvider({
             setRole(res.data.role);
             if (res.data.role == 1) {
               setData(res.data.student);
-              setTutors(res.data.tutors);
+              setUsers(res.data.tutors);
               navigate(location);
             } else if (res.data.role == 0) {
               setCurrentTutor(res.data.tutor);
+              setUsers(res.data.students);
               navigate(location);
             }
           } else {
@@ -62,8 +120,8 @@ export default function DataProvider({
       value={{
         data,
         setData,
-        tutors,
-        setTutors,
+        users,
+        setUsers,
         currentTutor,
         setCurrentTutor,
         role,

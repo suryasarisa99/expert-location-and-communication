@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useRef, useState } from "react";
 import "./search.scss";
 import { FaSearch, FaUserTie } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
@@ -10,6 +10,9 @@ import axios from "axios";
 import { TutorSearchType } from "@src/types/StudentType";
 import ImgPopup from "@components/ImgPopup";
 import { motion, easeIn, easeOut, easeInOut } from "framer-motion";
+import { socket } from "@context/Data/DataContext";
+import Fuse from "fuse.js";
+
 type SearchPageProps = {
   isLgScreen: boolean;
 };
@@ -19,9 +22,10 @@ export default function SearchPage({ isLgScreen }: SearchPageProps) {
   const navigate = useNavigate();
   const selectedId = location.pathname.split("/")[2];
   const [query, setQuery] = useState("");
-  const { tutors, setTutors } = useData();
+  const { users, setUsers } = useData();
   const [showProfilePic, setShowProfilePic] = useState(false);
   const [imgLocation, setImgLocation] = useState({ x: 0, y: 0, i: -1 });
+  const tutorsSearchFuseRef = useRef<Fuse<TutorSearchType>>();
 
   function handleFollow(tutor: TutorSearchType) {
     if (tutor.status == "accepted") navigate("/chat/" + tutor._id);
@@ -30,17 +34,24 @@ export default function SearchPage({ isLgScreen }: SearchPageProps) {
     else if (tutor.status == "pending")
       alert("Tutor has not accepted your request");
     else {
-      setTutors((prv) =>
+      setUsers((prv) =>
         prv.map((t) => {
           if (t._id === tutor._id) return { ...t, status: "pending" };
           return t;
         })
       );
-      axios.get(`${import.meta.env.VITE_SERVER}/user/follow/${tutor._id}`, {
-        withCredentials: true,
-      });
+      socket.emit("follow-req", { to: tutor._id });
+      // axios.get(`${import.meta.env.VITE_SERVER}/user/follow/${tutor._id}`, {
+      //   withCredentials: true,
+      // });
     }
   }
+
+  useEffect(() => {
+    tutorsSearchFuseRef.current = new Fuse(users, {
+      keys: ["_id", "name"],
+    });
+  }, [users]);
 
   return (
     <div className="search-page page">
@@ -87,12 +98,14 @@ export default function SearchPage({ isLgScreen }: SearchPageProps) {
                 x: imgLocation.x,
                 transition: { duration: 0.15, ease: easeIn },
               }}
-              src={tutors?.[imgLocation.i]?.img}
+              src={users?.[imgLocation.i]?.img}
             ></motion.img>
           </ImgPopup>
           <div className="search-list ">
-            {/* {Array.from({ length: 50 }).map((_, i) => ( */}
-            {tutors.map((tutor, i) => (
+            {(query
+              ? tutorsSearchFuseRef.current?.search(query).map((x) => x.item)
+              : users
+            )?.map((tutor, i) => (
               <div
                 className={
                   "search-item " + (selectedId === tutor._id ? "active" : "")

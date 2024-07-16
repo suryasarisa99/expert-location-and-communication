@@ -25,13 +25,13 @@ export type TutorType = {
   email: string;
   name: string;
   img?: string;
-  requests: {
-    _id: string;
-    name: string;
-    img?: string;
-    // status: "accepted" | "rejected" | "pending" | "-";
-    status: string;
-  }[];
+  // requests: {
+  //   _id: string;
+  //   name: string;
+  //   img?: string;
+  //   // status: "accepted" | "rejected" | "pending" | "-";
+  //   status: string;
+  // }[];
   educations: {
     institute: string;
     degree: string;

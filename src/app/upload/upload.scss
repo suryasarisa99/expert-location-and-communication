@@ -64,8 +64,8 @@
   }
 
   textarea {
-    width: calc(100% - 30px);
-    margin: 0px 15px;
+    width: calc(100% - 90px);
+    margin: 0px 45px;
     border-radius: 16px;
     background-color: var(--accent-too-light);
     border: 1px solid var(--accent-md);
@@ -145,6 +145,10 @@
       p.drag-mssg {
         display: none;
       }
+    }
+    textarea {
+      width: calc(100% - 30px);
+      margin: 0 15px;
     }
   }
 }

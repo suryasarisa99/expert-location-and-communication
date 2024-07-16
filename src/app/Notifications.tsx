@@ -1,18 +1,12 @@
+import { socket } from "@context/Data/DataContext";
 import useData from "@hooks/useData";
 import axios from "axios";
 import React, { useEffect } from "react";
 
 export default function Notifications() {
-  const { role, currentTutor, setCurrentTutor } = useData();
+  const { role, currentTutor, setCurrentTutor, users, setUsers } = useData();
 
-  useEffect(() => {
-    console.log(currentTutor?.requests);
-  }, [currentTutor]);
-
-  if (
-    !currentTutor ||
-    currentTutor.requests.filter((x) => x.status == "pending").length == 0
-  )
+  if (!currentTutor || users.filter((x) => x.status == "pending").length == 0)
     return (
       <div className="notifications-page page">
         <center>
@@ -26,30 +20,39 @@ export default function Notifications() {
     name: string,
     status: "accepted" | "rejected"
   ) {
-    setCurrentTutor((prev) => {
-      if (!prev) return prev;
-      prev.requests = prev.requests.filter((x) => x._id !== id);
-      return { ...prev };
+    // update status of request in currentTutor
+    setUsers((prv) => {
+      return [
+        ...prv.map((x) => {
+          if (x._id == id) return { ...x, status };
+          return x;
+        }),
+      ];
     });
-    axios
-      .post(
-        `${import.meta.env.VITE_SERVER}/user/accept/${id}/${status}`,
-        {
-          studentName: name,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-      });
+    socket.emit("accept-req", {
+      id,
+      status,
+      studentName: name,
+    });
+    // axios
+    //   .post(
+    //     `${import.meta.env.VITE_SERVER}/user/accept/${id}/${status}`,
+    //     {
+    //       studentName: name,
+    //     },
+    //     {
+    //       withCredentials: true,
+    //     }
+    //   )
+    //   .then((res) => {
+    //     console.log(res.data);
+    //   });
   }
   return (
     <div className="notifications-page page">
       <div className="notifications-outer">
         <div className="notifications">
-          {currentTutor.requests
+          {users
             .filter((x) => x.status == "pending")
             .map((request, i) => (
               <div key={request._id} className="notification">

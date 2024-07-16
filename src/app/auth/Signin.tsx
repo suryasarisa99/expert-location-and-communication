@@ -1,5 +1,6 @@
 import PasswordInput from "@components/PasswordInput";
 import Popup from "@components/Popup";
+import { socket } from "@context/Data/DataContext";
 import useData from "@hooks/useData";
 import axios from "axios";
 import React, { FormEvent, useState } from "react";
@@ -49,7 +50,6 @@ export default function Signin() {
       })
       .catch((err) => {
         console.log(err);
-        alert(err);
         setShowPopup(true);
         if (err.response.data.title) {
           setError({

@@ -35,6 +35,11 @@
       margin: 20px;
     }
   }
+  .input-container {
+    width: 100%;
+    position: relative;
+  }
+
   .chat-header {
     // background-color: rgb(195, 195, 195);
     padding: 16px 20px;
@@ -55,6 +60,24 @@
       font-size: 19px;
       padding-bottom: 2px;
       padding-inline: 12px;
+    }
+  }
+  .search-header {
+    // background-color: red;
+    width: 100%;
+    padding-bottom: 12px;
+    input {
+      width: 100%;
+      border-radius: 50px;
+      padding-left: 40px;
+    }
+
+    .back-icon {
+      position: absolute;
+      top: 9.5px;
+      left: 14px;
+      color: gray;
+      cursor: pointer;
     }
   }
 }

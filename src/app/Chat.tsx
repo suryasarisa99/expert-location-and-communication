@@ -15,7 +15,6 @@ import Popup from "@components/Popup";
 import useData from "@hooks/useData";
 
 export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
-  const largeScreenSize = 768;
   const location = useLocation();
 
   const chatListScrollRef = useRef(0.0);

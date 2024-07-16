@@ -20,8 +20,6 @@ export default function App() {
   const [isLgScreen, setIsLgScreen] = useState(
     window.innerWidth > largeScreenSize
   );
-  const chatListScrollRef = useRef(0.0);
-  const navigate = useNavigate();
 
   useEffect(() => {
     function handleResize() {

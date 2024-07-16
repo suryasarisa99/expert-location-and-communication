@@ -6,11 +6,13 @@ import React, {
   useRef,
 } from "react";
 import { useLocation, useNavigate, useNavigation } from "react-router-dom";
-import { FaSearch, FaUser, FaUserTie } from "react-icons/fa";
+import { FaArrowLeft, FaSearch, FaUser, FaUserTie } from "react-icons/fa";
 import useData from "@hooks/useData";
 import { AnimatePresence, easeIn, motion } from "framer-motion";
 import Popup from "./Popup";
 import ImgPopup from "./ImgPopup";
+import Fuse from "fuse.js";
+import { TutorSearchType } from "@src/types/StudentType";
 
 type ChatListProps = {
   isLgScreen: boolean;
@@ -29,34 +31,38 @@ export default function ChatList({
   const location = useLocation();
   const scrollDivRef = useRef<HTMLDivElement>(null);
   const [userId, setUserId] = useState("");
-  const { data, role, currentTutor, tutors } = useData();
+  const { data, role, currentTutor, users } = useData();
   const [showProfilePic, setShowProfilePic] = useState(false);
   const [imgLocation, setImgLocation] = useState({ x: 0, y: 0, i: -1 });
+  const [query, setQuery] = useState("");
+  const [showSearchBar, setShowSearchPage] = useState(false);
+
   useEffect(() => {
     setUserId(location.pathname.split("/")[2]);
   }, [location.pathname]);
+  const userSearchRef = useRef<Fuse<TutorSearchType>>();
 
-  useEffect(() => {
-    const requestUserLocation = () => {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const l = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            };
-          },
-          (error) => {
-            console.error("Error obtaining location:", error);
-          }
-        );
-      } else {
-        console.log("Geolocation is not supported by this browser.");
-      }
-    };
+  // useEffect(() => {
+  //   const requestUserLocation = () => {
+  //     if ("geolocation" in navigator) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           const l = {
+  //             latitude: position.coords.latitude,
+  //             longitude: position.coords.longitude,
+  //           };
+  //         },
+  //         (error) => {
+  //           console.error("Error obtaining location:", error);
+  //         }
+  //       );
+  //     } else {
+  //       console.log("Geolocation is not supported by this browser.");
+  //     }
+  //   };
 
-    requestUserLocation();
-  });
+  //   requestUserLocation();
+  // });
 
   useLayoutEffect(() => {
     if (!scrollDivRef.current) return;
@@ -67,9 +73,19 @@ export default function ChatList({
     };
   }, []);
 
-  const users = (role == 1 ? tutors : currentTutor?.requests)?.filter(
-    (x) => x.status === "accepted"
-  );
+  useEffect(() => {
+    const mappedUsers = users?.filter((x) => x.status === "accepted");
+    if (mappedUsers) {
+      userSearchRef.current = new Fuse(mappedUsers, {
+        keys: ["_id", "name"],
+        threshold: 0.4,
+      });
+    }
+  }, []);
+
+  // const users = users?.filter(
+  //   (x) => x.status === "accepted"
+  // );
 
   return (
     <div className="chat-sidebar">
@@ -103,19 +119,50 @@ export default function ChatList({
           src={users?.[imgLocation.i]?.img}
         ></motion.img>
       </ImgPopup>
-      <div className="chat-header">
-        <div className="title">
-          @{role == 1 ? data?._id : currentTutor?._id}
+      {!showSearchBar ? (
+        <div className="chat-header">
+          <div className="title">
+            @{role == 1 ? data?._id : currentTutor?._id}
+          </div>
+          <div
+            className="search-icon"
+            onClick={() => {
+              setShowSearchPage(true);
+            }}
+          >
+            <FaSearch />
+          </div>
         </div>
-        <div className="search-icon">
-          <FaSearch />
+      ) : (
+        <div className="chat-header search-header">
+          <div className="input-container">
+            <input
+              placeholder="Search..."
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <div
+              className="back-icon"
+              onClick={() => {
+                setQuery("");
+                setShowSearchPage(false);
+              }}
+            >
+              <FaArrowLeft />
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+      {/* </div> */}
       <div
         className={"chat-list " + (isLgScreen ? "lg-screen" : "sm-screen")}
         ref={scrollDivRef}
       >
-        {users?.map((user, i) => {
+        {(query == ""
+          ? users.filter((x) => x.status === "accepted")
+          : userSearchRef.current?.search(query).map((x) => x.item)
+        )?.map((user, i) => {
           return (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
