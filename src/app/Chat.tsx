@@ -46,26 +46,29 @@ export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
           </div>
         </div>
       </Popup>
-      {(isLgScreen ||
-        (!isLgScreen && location.pathname.replaceAll("/", "") === "chat")) && (
-        <>
-          <ChatList
-            selectChat={(chatId) => {
-              if (location.pathname === "/chat") navigate("/chat/" + chatId);
-              else navigate("/chat/" + chatId, { replace: true });
-            }}
-            isLgScreen={isLgScreen}
-            scrollAmount={chatListScrollRef.current}
-            setScrollAmount={(scrollAmount) => {
-              chatListScrollRef.current = scrollAmount;
-            }}
-          />
-        </>
-      )}
-      <Routes>
-        <Route path="/:id" element={<ChatSection />} />
-        <Route path="/:id/profile" element={<SearchSection />} />
-      </Routes>
+      <div className="chat-inner">
+        {(isLgScreen ||
+          (!isLgScreen &&
+            location.pathname.replaceAll("/", "") === "chat")) && (
+          <>
+            <ChatList
+              selectChat={(chatId) => {
+                if (location.pathname === "/chat") navigate("/chat/" + chatId);
+                else navigate("/chat/" + chatId, { replace: true });
+              }}
+              isLgScreen={isLgScreen}
+              scrollAmount={chatListScrollRef.current}
+              setScrollAmount={(scrollAmount) => {
+                chatListScrollRef.current = scrollAmount;
+              }}
+            />
+          </>
+        )}
+        <Routes>
+          <Route path="/:id" element={<ChatSection />} />
+          <Route path="/:id/profile" element={<SearchSection />} />
+        </Routes>
+      </div>
     </div>
   );
 }

@@ -4,6 +4,12 @@
   }
 }
 
+@mixin md-screen {
+  @media (max-width: 1250px) {
+    @content;
+  }
+}
+
 @mixin sm-screen {
   @media (max-width: 768px) {
     @content;
@@ -12,7 +18,8 @@
 
 .home {
   display: flex;
-  height: 100%;
+  // flex-grow: 1;
+  // background-color: green;
   &.sm-screen {
     flex-direction: column;
 
@@ -21,10 +28,27 @@
     }
   }
 }
+.chat-inner {
+  flex-grow: 1;
+  @include lg-screen() {
+    display: flex;
+    box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
+    border-radius: 8px;
+    margin-right: 40px;
+    height: calc(100vh - 70px);
+    margin-top: 15px;
+    // top:  15 + (70/2 ) = 50
+    // bottom: 70/2 = 35
+  }
+}
 .chat-sidebar {
   @include lg-screen {
     width: 400px;
-    height: calc(100vh - 140px);
+    height: 100%;
+    box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
+    border-right: 1px solid var(--border);
+    // height: fit-content;
+    // max-height: calc(100vh - 60px);
   }
   @include sm-screen {
     height: calc(100dvh - 280px);
@@ -82,11 +106,23 @@
   }
 }
 
-.chat-list {
-  margin: 35px 0;
-  overflow-y: auto;
+::-webkit-scrollbar {
+  width: 4px;
+  &:hover {
+    width: 8px;
+  }
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent-light);
   border-radius: 8px;
-  height: 100%;
+
+  &:hover {
+    background-color: var(--accent-md);
+  }
+}
+.chat-list {
+  overflow-y: auto;
+  height: calc(100vh - 70px - 66.5px);
 
   .chat-list-item {
     padding: 16px 16px;
@@ -97,7 +133,6 @@
       background-color: var(--highlight);
     }
     border-bottom: 1px solid var(--border);
-    border-right: 1px solid var(--border);
 
     display: flex;
     align-items: center;
@@ -129,7 +164,10 @@
         align-items: center;
         margin-bottom: 4px;
       }
-      .user-name {
+      .bottom-row {
+        display: flex;
+      }
+      .name {
         font-size: 18px;
         flex-grow: 1;
       }
@@ -137,20 +175,39 @@
         font-size: 13px;
         color: var(--dimmed-txt-clr);
       }
-      .last-mssg {
+      .username {
         font-size: 14px;
+        flex-grow: 1;
         color: var(--dimmed-txt-clr);
+      }
+      .mssg-count {
+        background-color: var(--highlight);
+        padding: 1px 0px;
+        font-size: 13px;
+        width: 35px;
+        border-radius: 12px;
+        text-align: center;
+      }
+      .online {
+        padding: 1px 8px;
+        border-radius: 8px;
+        background-color: var(--highlight);
+        color: var(--accent-dark);
+        font-size: 13px;
       }
     }
   }
 
   @include lg-screen {
-    box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
   }
   @include sm-screen {
+    // -75 for bootm nav bar
+    // -66.5 for chat-list header (.chat-header)
+
     width: 100%;
     margin: 0px 0px;
     padding: 10px 15px;
+    height: calc(100dvh - 66.6px - 75px);
 
     .chat-list-item {
       border-radius: 8px;
@@ -215,9 +272,9 @@
     }
 
     @include lg-screen() {
-      margin-top: 35px;
       border-radius: 8px;
       margin-inline: 20px;
+      margin-top: 20px;
 
       .back-arrow {
         display: none;
@@ -243,7 +300,7 @@
   flex-direction: column;
   gap: 40px;
   padding: 55px 28px;
-
+  // background-color: yellow;
   &.sm-screen {
     flex-direction: row;
     justify-content: space-between;
@@ -271,7 +328,11 @@
 }
 
 .mssgs {
-  height: calc(100dvh - 85px - 75px - 50px);
+  // -70px : for top + bottom space for chat inner
+  // -95px: for chat top bar
+  // -54.925px: for chat bottom bar
+  // -10px: for chat bottom space
+  height: calc(100dvh - 70px - 95px - 54.925px - 18px);
   padding-inline: 50px;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -283,7 +344,6 @@
   gap: 8px;
 
   .mssg {
-    background-color: blue;
     padding: 4px 16px;
     font-size: 22px;
     // border-radius: 12px;

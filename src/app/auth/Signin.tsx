@@ -13,7 +13,7 @@ export default function Signin() {
     role: 1,
   });
   const navigate = useNavigate();
-  const { setTutors, setData, setRole, setCurrentTutor } = useData();
+  const { setUsers, setData, setRole, setCurrentTutor } = useData();
   const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState({
     title: "",
@@ -40,9 +40,10 @@ export default function Signin() {
           setRole(res.data.role);
           if (res.data.role == 1) {
             setData(res.data.student);
-            setTutors(res.data.tutors);
+            setUsers(res.data.tutors);
           } else {
             setCurrentTutor(res.data.tutor);
+            setUsers(res.data.students);
           }
           localStorage.setItem("loggedIn", "true");
           navigate("/chat");

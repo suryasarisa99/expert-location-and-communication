@@ -6,6 +6,7 @@ import {
   StudentType,
   TutorType,
   TutorSearchType,
+  MssgType,
 } from "@src/types/StudentType";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +26,11 @@ export default function DataProvider({
   const [currentTutor, setCurrentTutor] = useState<TutorType | null>(null);
   const [users, setUsers] = useState<TutorSearchType[]>([]);
   const [selectedFile, setSelectedFile] = useState<string | undefined>();
+  const [newMssgs, setNewMssgs] = useState<{ [key: string]: number }>({
+    hulk: 1,
+    spidy: 0,
+  });
+  const [messages, setMessages] = useState<MssgType[]>([]);
 
   const navigate = useNavigate();
   const [role, setRole] = useState(-1);
@@ -47,36 +53,47 @@ export default function DataProvider({
     });
   }, []);
 
-  // useEffect(() => {
-  //   if (role == -1) return;
+  useEffect(() => {
+    const currentUser = location.pathname.split("/")[2];
+    if (location.pathname) {
+      setNewMssgs((prv) => ({ ...prv, [currentUser]: 0 }));
+    }
+    socket.on("new-mssg", (mssg) => {
+      if (mssg.from == currentUser) {
+        setMessages((prv) => [...prv, mssg]);
+      } else {
+        setNewMssgs((prv) => ({
+          ...prv,
+          [mssg.from]: (prv[mssg.from] || 0) + 1,
+        }));
+      }
+    });
+    return () => {
+      socket.off("new-mssg");
+    };
+  }, [location.pathname]);
 
-  //   socket.on("accept-req", (data) => {
-  //     console.log("accept req: ", data);
-  //     if (role == 0) {
-  //       setCurrentTutor((prv) => {
-  //         if (!prv) return prv;
-  //         else
-  //           return {
-  //             ...prv,
-  //             requests: prv.requests.map((x) => {
-  //               if (x._id == data._id) return { ...x, status: data.status };
-  //               return x;
-  //             }),
-  //           };
-  //       });
-  //     } else if (role == 1) {
-  //       setTutors((prv) => {
-  //         return prv.map((x) => {
-  //           if (x._id == data._id) return { ...x, status: data.status };
-  //           return x;
-  //         });
-  //       });
-  //     }
-  //   });
-  //   return () => {
-  //     socket.off("accept-req");
-  //   };
-  // }, [role]);
+  useEffect(() => {
+    if (role == -1) return;
+
+    console.log("listening for online users");
+
+    socket.on("online-status", (data) => {
+      console.log("from socketio: ", data);
+      if (role != data.role)
+        setUsers((prv) => {
+          return prv.map((x) => {
+            if (x._id == data.id) return { ...x, isOnline: data.status };
+            return x;
+          });
+        });
+    });
+
+    return () => {
+      socket.off("online-status");
+      socket.off("online-users");
+    };
+  }, [role]);
 
   useEffect(() => {
     socket.on("new-std", (data: TutorSearchType) => {
@@ -128,6 +145,10 @@ export default function DataProvider({
         setRole,
         selectedFile,
         setSelectedFile,
+        newMssgs,
+        setNewMssgs,
+        messages,
+        setMessages,
       }}
     >
       {children}

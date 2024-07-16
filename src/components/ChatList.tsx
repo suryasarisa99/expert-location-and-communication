@@ -36,6 +36,7 @@ export default function ChatList({
   const [imgLocation, setImgLocation] = useState({ x: 0, y: 0, i: -1 });
   const [query, setQuery] = useState("");
   const [showSearchBar, setShowSearchPage] = useState(false);
+  const { newMssgs } = useData();
 
   useEffect(() => {
     setUserId(location.pathname.split("/")[2]);
@@ -86,7 +87,6 @@ export default function ChatList({
   // const users = users?.filter(
   //   (x) => x.status === "accepted"
   // );
-
   return (
     <div className="chat-sidebar">
       <ImgPopup
@@ -163,11 +163,12 @@ export default function ChatList({
           ? users.filter((x) => x.status === "accepted")
           : userSearchRef.current?.search(query).map((x) => x.item)
         )?.map((user, i) => {
+          const newMssgCount = newMssgs[user._id];
           return (
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: i * 0.1 }}
+              // initial={{ opacity: 0, y: 50 }}
+              // whileInView={{ opacity: 1, y: 0 }}
+              // transition={{ duration: 0.3, delay: i * 0.1 }}
               key={i}
               onClick={() => selectChat(user._id)}
               className={
@@ -207,10 +208,15 @@ export default function ChatList({
               </div>
               <div className="chat-item-column">
                 <div className="top-row">
-                  <p className="user-name">{user.name}</p>
-                  {/* <p className="time">{user.lastTime}</p> */}
+                  <p className="name">{user.name}</p>
+                  {user.isOnline && <p className="online">online</p>}
                 </div>
-                <p className="last-mssg">@{user._id}</p>
+                <div className="bottom-row">
+                  <p className="username">@{user._id}</p>
+                  {newMssgCount > 0 && (
+                    <p className="mssg-count">{newMssgs[user._id]}</p>
+                  )}
+                </div>
               </div>
             </motion.div>
           );

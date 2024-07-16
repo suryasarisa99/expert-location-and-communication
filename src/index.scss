@@ -20,20 +20,37 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    // --chat-list-item-bg: #151515;
-    // --bg: yellow;
-    // --bg-from: #fffefe;
-    // --bg-to: #fbe3e3;
-    // --bg-to: #e1b6b6;
-    // --bg-to: green;
-    // --bg-from: red;
-    // --avatar-bg: #191919;
-    // --dimmed-txt-clr: #969696;
+    --chat-list-item-bg: var(--input-bg);
+    --avatar-bg: var(--accent-light);
+    --dimmed-txt-clr: #666;
+    --bg: #493533;
+    --bg-from: #1c1b1b;
+    --bg-to: #270e0e;
+    --highlight: #533238;
+    --input-bg: #351c22;
+    --border: #443434;
+    --accent-too-light: #734653;
+    --accent-to-light: #542732;
+    --accent-light: #473037;
+    --accent-md: #302326;
+    --accent: #852b4c;
+    --accent-dark: #b02044;
+    --on-accent: #fce3ea;
+    --accent-txt: #e23566;
   }
 }
 
 @mixin lg-screen {
   @media (min-width: 769px) {
+    @content;
+  }
+}
+
+@mixin md-screen {
+  // @media (min-width: 769px) and (max-width: 1024px) {
+  //   @content;
+  // }
+  @media (max-width: 1024px) {
     @content;
   }
 }
@@ -165,14 +182,29 @@ input[type="checkbox"] {
 
 .app {
   display: flex;
-  height: 100dvh;
+  height: 100vh;
+  align-items: center;
 
   .routes {
     flex-grow: 1;
   }
+  @include md-screen() {
+    .side-bar {
+      padding-inline: 10px;
+      .icon-outer {
+        padding-top: 12px;
+        padding-bottom: 5px;
+        padding-inline: 16px;
+
+        font-size: 28px;
+      }
+    }
+  }
 
   @include sm-screen {
+    align-items: stretch;
     flex-direction: column;
+    height: 100dvh;
     .routes {
       height: calc(100vh - 62px);
     }

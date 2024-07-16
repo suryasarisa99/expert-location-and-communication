@@ -18,6 +18,7 @@ export type TutorSearchType = {
   name: string;
   status: string;
   img?: string;
+  isOnline?: boolean;
 };
 
 export type TutorType = {
@@ -48,4 +49,11 @@ export type TutorType = {
     from: number;
     to: number;
   }[];
+};
+
+export type MssgType = {
+  isStudent: boolean;
+  mssg: string;
+  time: string;
+  img?: string;
 };

@@ -10,7 +10,7 @@ export default function SearchSection() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [tutorData, setTutorData] = useState<TutorType | null>(null);
-  const { tutors } = useData();
+  const { users } = useData();
   useEffect(() => {
     console.log("search section mounted");
     function setWidthSkillPieChart() {
@@ -49,8 +49,7 @@ export default function SearchSection() {
           <div className="bottom-row">
             <button
               onClick={() => {
-                const status = tutors.find((x) => x._id == id)
-                  ?.status as string;
+                const status = users.find((x) => x._id == id)?.status as string;
                 if (status == "accepted") navigate("/chat/" + id);
                 else if (status == "rejected")
                   alert("Tutor has rejected your request");
@@ -64,7 +63,7 @@ export default function SearchSection() {
                 pending: "Pending",
                 rejected: "Rejected",
                 "-": "Follow",
-              }[tutors.find((x) => x._id == id)?.status as string] || "Follow"}
+              }[users.find((x) => x._id == id)?.status as string] || "Follow"}
             </button>
             <p className="tutor-location">
               <MdShareLocation />

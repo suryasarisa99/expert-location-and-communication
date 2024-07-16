@@ -1,4 +1,5 @@
 import {
+  MssgType,
   StudentType,
   TutorSearchType,
   TutorType,
@@ -16,6 +17,10 @@ type DataContextTypes = {
   setRole: React.Dispatch<React.SetStateAction<number>>;
   selectedFile: string | undefined;
   setSelectedFile: React.Dispatch<React.SetStateAction<string | undefined>>;
+  newMssgs: { [key: string]: number };
+  setNewMssgs: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+  messages: MssgType[];
+  setMessages: React.Dispatch<React.SetStateAction<MssgType[]>>;
 };
 
 export default DataContextTypes;

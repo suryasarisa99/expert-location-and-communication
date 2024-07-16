@@ -24,17 +24,10 @@ export default function ChatSection() {
   const [imgPickedMode, setImgPickedMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<number>(-1);
-  type MssgType = {
-    isStudent: boolean;
-    mssg: string;
-    time: string;
-    img?: string;
-  };
-
+  const { messages, setMessages } = useData();
   const scrollDivRef = useRef<HTMLDivElement>(null);
   const { role, selectedFile, setSelectedFile } = useData();
   const [mssg, setMssg] = useState("");
-  const [messages, setMessages] = useState<MssgType[]>([]);
   const [fileDetails, setFileDetails] = useState({
     name: "",
     size: 0,
@@ -48,6 +41,10 @@ export default function ChatSection() {
   }, [messages]);
 
   useEffect(() => {
+    return () => setMessages([]);
+  }, []);
+
+  useEffect(() => {
     console.log("fetching messages");
     axios
       .get(`${import.meta.env.VITE_SERVER}/user/mssgs/${id}`, {
@@ -58,17 +55,6 @@ export default function ChatSection() {
         setMessages(res.data.messages);
       });
   }, [id]);
-
-  useEffect(() => {
-    socket.on("new-mssg", (mssg) => {
-      console.log("mssg from socket: ", mssg);
-      if (mssg.from == id) setMessages((prv) => [...prv, mssg]);
-    });
-
-    return () => {
-      socket.off("new-mssg");
-    };
-  }, []);
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
