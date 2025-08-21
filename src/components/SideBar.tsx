@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { RiUploadCloudLine, RiUploadCloudFill } from "react-icons/ri";
 import useData from "@hooks/useData";
 import { TbCarouselVertical, TbCarouselVerticalFilled } from "react-icons/tb";
+import { SearchIcon, SearchXIcon } from "lucide-react";
 type SideBarProps = {
   isLgScreen: boolean;
 };
@@ -21,12 +22,7 @@ export default function SideBar({ isLgScreen }: SideBarProps) {
       icon: RiMessage3Line,
       activeIcon: RiMessage3Fill,
     },
-    {
-      name: "Notifications",
-      path: "/notifications",
-      icon: AiOutlineNotification,
-      activeIcon: AiFillNotification,
-    },
+
     {
       name: "Profile",
       path: "/profile",
@@ -42,6 +38,8 @@ export default function SideBar({ isLgScreen }: SideBarProps) {
         path: "/search",
         icon: IoSearchSharp,
         activeIcon: IoSearchSharp,
+        // icon: SearchIcon,
+        // activeIcon: SearchXIcon,
       };
 
       const postsRoute = {
@@ -60,14 +58,20 @@ export default function SideBar({ isLgScreen }: SideBarProps) {
         icon: RiUploadCloudLine,
         activeIcon: RiUploadCloudFill,
       };
+      const notificationRoute = {
+        name: "Notifications",
+        path: "/notifications",
+        icon: AiOutlineNotification,
+        activeIcon: AiFillNotification,
+      };
       const updatedNavItems = [...navItems];
-      updatedNavItems.splice(1, 0, uploadRoute);
+      updatedNavItems.splice(1, 0, uploadRoute, notificationRoute);
       setNavItems(updatedNavItems);
     }
   }, [role]);
 
   return (
-    <div className={"side-bar " + (isLgScreen ? "lg-screen" : "sm-screen")}>
+    <div className={"navbar " + (isLgScreen ? "lg-screen" : "sm-screen")}>
       {navItems.map((item, index) => (
         <div
           key={index}

@@ -6,10 +6,12 @@
 - teacher update page
 - teacher profile page
 
+- use hook for firebase upload
 - add a crop and file upload and progress bar in upload page
 - click on images in messages and posts to view them in full screen
 - make text box to be grow like chatgpt
 - bottom bar in chat while in croping section in large screen
-- better chat layout ( instead as seperated look components in lg screen)
 - profile for students too
 - in profile page fix padding in case icon
+
+- fix dark theme

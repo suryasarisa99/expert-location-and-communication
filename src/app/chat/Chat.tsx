@@ -1,5 +1,5 @@
-import ChatList from "@components/ChatList";
-import ChatSection from "@components/ChatSection";
+import ChatList from "@app/chat/ChatList";
+import ChatSection from "@app/chat/ChatSection";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   Routes,
@@ -8,11 +8,11 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import "./home.scss";
 import SideBar from "@components/SideBar";
-import SearchSection from "./search/SearchSection";
+import SearchSection from "../search/SearchSection";
 import Popup from "@components/Popup";
 import useData from "@hooks/useData";
+import "./chat.scss";
 
 export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
   const location = useLocation();
@@ -23,7 +23,9 @@ export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
   const { role } = useData();
 
   return (
-    <div className={"home " + (isLgScreen ? "lg-screen" : "sm-screen")}>
+    <
+      // className={"home-page page " + (isLgScreen ? "lg-screen" : "sm-screen")}
+    >
       <Popup
         show={popup}
         handleClose={() => setPopup(false)}
@@ -46,7 +48,7 @@ export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
           </div>
         </div>
       </Popup>
-      <div className="chat-inner">
+      <div className="container-page">
         {(isLgScreen ||
           (!isLgScreen &&
             location.pathname.replaceAll("/", "") === "chat")) && (
@@ -69,6 +71,6 @@ export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
           <Route path="/:id/profile" element={<SearchSection />} />
         </Routes>
       </div>
-    </div>
+    </>
   );
 }

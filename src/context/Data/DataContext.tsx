@@ -1,6 +1,5 @@
 import React, { useState, useEffect, createContext, useReducer } from "react";
-import Io from "socket.io-client";
-import DataContextType from "./DataContextTypes";
+
 import DataContextTypes from "./DataContextTypes";
 import {
   StudentType,
@@ -8,15 +7,22 @@ import {
   TutorSearchType,
   MssgType,
 } from "@src/types/StudentType";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "@utils/axios";
+import Io from "socket.io-client";
 
-console.log(import.meta.env.VITE_SERVER);
 export const socket = Io(import.meta.env.VITE_SERVER, {
   path: "/socket.io/",
   withCredentials: true,
+  extraHeaders: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+  auth: {
+    token: localStorage.getItem("token"),
+  },
 });
-export const DataContext = createContext({} as DataContextType);
+
+export const DataContext = createContext({} as DataContextTypes);
 export default function DataProvider({
   children,
 }: {
@@ -26,10 +32,7 @@ export default function DataProvider({
   const [currentTutor, setCurrentTutor] = useState<TutorType | null>(null);
   const [users, setUsers] = useState<TutorSearchType[]>([]);
   const [selectedFile, setSelectedFile] = useState<string | undefined>();
-  const [newMssgs, setNewMssgs] = useState<{ [key: string]: number }>({
-    hulk: 1,
-    spidy: 0,
-  });
+  const [newMssgs, setNewMssgs] = useState<{ [key: string]: number }>({});
   const [messages, setMessages] = useState<MssgType[]>([]);
 
   const navigate = useNavigate();
@@ -103,8 +106,8 @@ export default function DataProvider({
       let location = window.location.pathname;
       if (["/", "/signin"].includes(location)) location = "/chat";
       console.log("prv loc: ", location);
-      axios
-        .get(`${import.meta.env.VITE_SERVER}/auth/me`, {
+      axiosInstance
+        .get("auth/me", {
           withCredentials: true,
         })
         .then((res) => {
@@ -113,7 +116,21 @@ export default function DataProvider({
             setRole(res.data.role);
             if (res.data.role == 1) {
               setData(res.data.student);
-              setUsers(res.data.tutors);
+              const tutorsWithDistance: TutorSearchType[] = [];
+              const tutors: TutorSearchType[] = [];
+              for (const tutor of res.data.tutors) {
+                if (tutor.distance != undefined) tutorsWithDistance.push(tutor);
+                else tutors.push(tutor);
+              }
+              setUsers([
+                ...tutorsWithDistance.sort(
+                  (a: TutorSearchType, b: TutorSearchType) => {
+                    return a.distance! - b.distance!;
+                  },
+                ),
+                ...tutors,
+              ]);
+
               navigate(location);
             } else if (res.data.role == 0) {
               setCurrentTutor(res.data.tutor);

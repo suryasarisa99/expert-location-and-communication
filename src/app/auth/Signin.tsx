@@ -2,6 +2,8 @@ import PasswordInput from "@components/PasswordInput";
 import Popup from "@components/Popup";
 import { socket } from "@context/Data/DataContext";
 import useData from "@hooks/useData";
+import { TutorSearchType } from "@src/types/StudentType";
+import axiosInstance from "@utils/axios";
 import axios from "axios";
 import React, { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,9 +24,9 @@ export default function Signin() {
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const { username, role } = formData;
-    axios
+    axiosInstance
       .post(
-        `${import.meta.env.VITE_SERVER}/auth/signin`,
+        "auth/signin",
         {
           username,
           role,
@@ -38,9 +40,25 @@ export default function Signin() {
         console.log(res.data);
         if (res.data.loggedIn) {
           setRole(res.data.role);
+          socket.disconnect();
+          socket.connect();
+          localStorage.setItem("token", res.data.token);
           if (res.data.role == 1) {
             setData(res.data.student);
-            setUsers(res.data.tutors);
+            const tutorsWithDistance: TutorSearchType[] = [];
+            const tutors: TutorSearchType[] = [];
+            for (const tutor of res.data.tutors) {
+              if (tutor.distance != undefined) tutorsWithDistance.push(tutor);
+              else tutors.push(tutor);
+            }
+            setUsers([
+              ...tutorsWithDistance.sort(
+                (a: TutorSearchType, b: TutorSearchType) => {
+                  return a.distance! - b.distance!;
+                }
+              ),
+              ...tutors,
+            ]);
           } else {
             setCurrentTutor(res.data.tutor);
             setUsers(res.data.students);
@@ -50,19 +68,14 @@ export default function Signin() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response);
         setShowPopup(true);
-        if (err.response.data.title) {
-          setError({
-            title: err.response.data.title,
-            mssg: err.response.data.mssg,
-          });
-        } else {
-          setError({
-            title: "Error",
-            mssg: "Something went wrong",
-          });
-        }
+        const title = err?.response?.data?.title ?? "Error";
+        const mssg = err?.response?.data?.mssg ?? "Something went wrong";
+        setError({
+          title,
+          mssg,
+        });
       });
   }
   return (

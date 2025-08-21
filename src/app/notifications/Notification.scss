@@ -1,0 +1,53 @@
+/* @notifications */
+@mixin sm-screen {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
+.notifications-page {
+  height: calc(100dvh - 62px);
+  display: grid;
+  place-items: center;
+}
+.notifications-outer {
+  width: 100%;
+  max-width: 700px;
+  height: 100vh;
+  padding-top: 40px;
+  .notifications {
+    margin: 0 20px;
+    .notification {
+      margin-bottom: 8px;
+      border-radius: 12px;
+      display: flex;
+      padding: 8px 20px;
+      box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+      background-color: var(--accent-too-light);
+      justify-content: space-between;
+      align-items: center;
+      .name {
+        font-size: 20px;
+      }
+      .column {
+      }
+      .actions {
+        display: flex;
+        gap: 20px;
+
+        button {
+          border-radius: 20px;
+          box-shadow: 0px 0 8px 0 rgb(0, 0, 0, 0.1);
+        }
+        .accept-btn {
+          background-color: var(--accent-dark);
+          color: var(--on-accent);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  @include sm-screen() {
+    height: calc(100dvh - 62px);
+  }
+}

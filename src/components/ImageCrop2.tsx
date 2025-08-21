@@ -155,13 +155,10 @@ export default function ImageCrop2({
             <ReactCrop
               crop={crop}
               //   aspect={aspectRatios[aspect]}
-              //   maxHeight={600}
-              //   minHeight={200}
               style={{
-                maxHeight: "70vh",
+                // maxHeight: "70vh",
                 margin: "auto auto",
-                backgroundColor: "green",
-                // position: "static",
+                width: "calc(100% - 20px)",
               }}
               onChange={(pixelCrop, percentCrop) => setCrop(percentCrop)}
             >
@@ -200,10 +197,6 @@ export default function ImageCrop2({
               const file = fileReader.result;
               console.log(file);
               setSelectedFile(file as string);
-              // const storageRef = ref(storage, "chat/" + id + "/" + file);
-              // uploadBytes(storageRef, e.target?.result).then((snapshot) => {
-              //   console.log("Uploaded a blob or file!");
-              // });
             };
           }
         }}

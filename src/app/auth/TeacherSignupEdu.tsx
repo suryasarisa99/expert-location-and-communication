@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import BasicSignup from "./BasicSignup";
 import { FaPlusCircle } from "react-icons/fa";
+import { EducationType } from "./Signup";
 
-export default function TeacherSignupEdu() {
+type EducationProps = {
+  educations: EducationType[];
+  setEducation: (edu: EducationType) => void;
+};
+
+export default function TeacherSignupEdu({
+  educations,
+  setEducation,
+}: EducationProps) {
   type EducationType = {
     degree: string;
     institution: string;
     from: number;
     to: number;
   };
-  const [skills, setSkills] = useState<EducationType[]>([]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -21,19 +29,15 @@ export default function TeacherSignupEdu() {
     const startYear = parseInt((formData.get("start-year") as string) || "0");
     const endYear = parseInt((formData.get("end-year") as string) || "0");
     if (degree == "") return;
-    setSkills([
-      ...skills,
-      { degree, institution, from: startYear, to: endYear },
-    ]);
-    // form.reset();
+    setEducation({ degree, institution, from: startYear, to: endYear });
+    form.reset();
   }
 
-  // return <BasicSignup />;
   return (
     <div className="signup-education signup-add-items">
       <div className="items-container">
-        {skills.map((skill) => (
-          <div className="item education-item">
+        {educations.map((skill, i) => (
+          <div className="item education-item" key={i}>
             <p className="degree">{skill.degree}</p>
             <div className="top-row">
               <p className="institution">{skill.institution}</p>

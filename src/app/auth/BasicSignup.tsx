@@ -36,9 +36,9 @@ export default function BasicSignup({
             id="role-student"
             name="role"
             value="1"
-            checked={commonData.role === "1"}
+            checked={commonData.role === 1}
             onChange={(e) =>
-              setCommonData({ ...commonData, role: e.target.value })
+              setCommonData({ ...commonData, role: +e.target.value })
             }
           />
         </label>
@@ -49,9 +49,9 @@ export default function BasicSignup({
             name="role"
             id="role-tutor"
             value="0"
-            checked={commonData.role === "0"}
+            checked={commonData.role === 0}
             onChange={(e) =>
-              setCommonData({ ...commonData, role: e.target.value })
+              setCommonData({ ...commonData, role: +e.target.value })
             }
           />
         </label>

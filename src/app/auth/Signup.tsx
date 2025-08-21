@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import BasicSignup from "./BasicSignup";
 import TeacherSignupSkills from "./TeacherSignupSkills";
 import TeacherSignupWorkExp from "./TeacherSignupWorkExp";
@@ -7,33 +7,67 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./signup.scss";
 import { Link, useNavigate } from "react-router-dom";
 import SignupLast from "./SignupLast";
+import axios from "axios";
+import { Last } from "node_modules/socket.io-client/build/esm/socket";
+import Popup from "@components/Popup";
+import axiosInstance from "@utils/axios";
 
 export type CommonSignupDataType = {
   name: string;
   age: string;
-  role: string;
+  role: number;
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
+export type SkillType = {
+  name: string;
+  level: number;
+};
+export type EducationType = {
+  degree: string;
+  institution: string;
+  from: number;
+  to: number;
+};
+
+export type WorkExpType = {
+  company: string;
+  position: string;
+  from: number;
+  to: number;
+};
+
+interface LastSignupPageMethods {
+  checkForSubmit: () => boolean;
+}
 
 export default function Signup() {
   const [page, setPage] = useState(0);
   const [prevPage, setPrevPage] = useState(-1);
   const [changeVarints, setChagneVariants] = useState(-1);
-
+  const lastSignupPageRef = useRef<LastSignupPageMethods | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [error, setError] = useState({
+    title: "",
+    mssg: "",
+  });
   const [commonData, setCommonData] = useState<CommonSignupDataType>({
     name: "",
     age: "",
-    role: "1",
+    role: 1,
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const [teacherFormData, setTeacherFormData] = useState({
+  const [teacherFormData, setTeacherFormData] = useState<{
+    skills: SkillType[];
+    workExp: WorkExpType[];
+    education: EducationType[];
+  }>({
     skills: [],
     workExp: [],
     education: [],
@@ -68,6 +102,23 @@ export default function Signup() {
     },
   };
 
+  function handleSubmit() {
+    // console.log(teacherFormData);
+    // return;
+    axiosInstance
+      .post("/auth/signup", {
+        ...commonData,
+        ...teacherFormData,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((e) => {
+        setShowPopup(true);
+        setError(e.response.data);
+      });
+  }
+
   const backPageVariants = {
     ...variants,
     exit: { ...variants.exit, x: 200 },
@@ -76,29 +127,82 @@ export default function Signup() {
   const pages = [
     <BasicSignup commonData={commonData} setCommonData={setCommonData} />,
   ].concat(
-    commonData.role === "0"
+    commonData.role === 0
       ? [
-          <TeacherSignupSkills />,
-          // <TeacherSignupWorkExp />,
-          <TeacherSignupEdu />,
-          <SignupLast commonData={commonData} setCommonData={setCommonData} />,
+          <TeacherSignupSkills
+            skills={teacherFormData.skills}
+            setSkills={(skill) =>
+              setTeacherFormData((prv) => ({
+                ...prv,
+                skills: [...prv.skills, skill],
+              }))
+            }
+          />,
+          <TeacherSignupWorkExp
+            works={teacherFormData.workExp}
+            setWorks={(workExp) =>
+              setTeacherFormData((prv) => ({
+                ...prv,
+                workExp: [...prv.workExp, workExp],
+              }))
+            }
+          />,
+          <TeacherSignupEdu
+            educations={teacherFormData.education}
+            setEducation={(education) =>
+              setTeacherFormData((prv) => ({
+                ...prv,
+                education: [...prv.education, education],
+              }))
+            }
+          />,
+          <SignupLast
+            handleSubmit={handleSubmit}
+            commonData={commonData}
+            setCommonData={setCommonData}
+            ref={lastSignupPageRef}
+          />,
         ]
-      : [<SignupLast commonData={commonData} setCommonData={setCommonData} />]
+      : [
+          <SignupLast
+            ref={lastSignupPageRef}
+            handleSubmit={handleSubmit}
+            commonData={commonData}
+            setCommonData={setCommonData}
+          />,
+        ]
   );
 
   const headings = [""].concat(
-    commonData.role === "0"
-      ? [
-          "Skills",
-          // "Work Experience",
-          "Education",
-          "",
-        ]
+    commonData.role === 0
+      ? ["Skills", "Work Experience", "Education", ""]
       : [""]
   );
 
   return (
     <div className="signup auth">
+      <Popup
+        show={showPopup}
+        closeOnClickOutside={true}
+        closeOnEscape={true}
+        handleClose={() => setShowPopup(false)}
+        className="basic-popup"
+      >
+        <div>
+          <div className="title">{error.title}</div>
+          <div className="mssg">{error.mssg}</div>
+          <div className="actions">
+            <button
+              className="primary"
+              onClick={() => {
+                setShowPopup(false);
+              }}
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      </Popup>
       {headings[page] == "" ? (
         <h1 className="tittle">Sign Up</h1>
       ) : (
@@ -134,14 +238,16 @@ export default function Signup() {
             </button>
           ) : (
             <span className="empty-btn"></span>
-            // <button className="icon-btn"></button>
           )}
 
           <button
             className="next"
             onClick={() => {
               if (page < pages.length - 1) setPage((currPage) => currPage + 1);
-              else navigate("/chat");
+              else {
+                if (!lastSignupPageRef.current) return;
+                if (lastSignupPageRef.current?.checkForSubmit()) handleSubmit();
+              }
             }}
           >
             {pages.length - 1 == page ? "Submit" : "Next"}

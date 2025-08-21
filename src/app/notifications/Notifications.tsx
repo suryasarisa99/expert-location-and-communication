@@ -2,7 +2,7 @@ import { socket } from "@context/Data/DataContext";
 import useData from "@hooks/useData";
 import axios from "axios";
 import React, { useEffect } from "react";
-
+import "./Notification.scss";
 export default function Notifications() {
   const { role, currentTutor, setCurrentTutor, users, setUsers } = useData();
 

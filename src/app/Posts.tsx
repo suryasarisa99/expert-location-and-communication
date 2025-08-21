@@ -5,26 +5,15 @@ import React, { useEffect, useState } from "react";
 import { FaUserTie } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { MdDownload } from "react-icons/md";
+import axiosInstance from "@utils/axios";
+import { PostType } from "@src/types/PostType";
 export default function Posts() {
-  type PostType = {
-    username: string;
-    name: string;
-    size: number;
-    caption: string;
-    filename: string;
-    time: string;
-    ext: string;
-    type: string;
-    url: string;
-    _id: string;
-    // isImg: boolean;
-  };
   const [posts, setPosts] = useState<PostType[]>([]);
-  const { tutors } = useData();
+  const { users } = useData();
   const navigate = useNavigate();
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_SERVER}/posts`, {
+    axiosInstance
+      .get("posts", {
         withCredentials: true,
       })
       .then((res) => {
@@ -40,7 +29,12 @@ export default function Posts() {
 
       <div className="posts">
         {posts.map((post) => {
-          const isImg = post.type.startsWith("image");
+          const hasText = !!post.caption;
+          const hasUrl = !!post.url;
+          let isImg = false;
+          console.log("post url: ", post);
+          if (hasUrl) isImg = post.type.startsWith("image");
+
           return (
             <div key={post._id} className={`post ${isImg ? "img" : "file"}`}>
               <div className="post-top-bar">
@@ -49,7 +43,7 @@ export default function Posts() {
                 </div>
                 <p
                   onClick={() => {
-                    tutors.forEach((tutor) => {
+                    users.forEach((tutor) => {
                       if (tutor._id === post.username) {
                         if (tutor.status == "accepted") {
                           navigate(`/chat/${post.username}`);
@@ -62,33 +56,34 @@ export default function Posts() {
                   {post.name}
                 </p>
               </div>
-              {isImg ? (
-                <img src={post.url} alt="" />
-              ) : (
-                <div
-                  className="file-preview"
-                  onClick={() => {
-                    window.open(post.url, "_blank");
-                  }}
-                >
-                  <div className="left">
-                    <div className="file-icon">
-                      <img src={getFileImg(post.type, post.ext)} alt="" />
-                    </div>
-                    <div className="file-details">
-                      <p className="file-name">{post.filename}</p>
-                      <p className="file-size">{post.size / 1000} kb</p>
-                    </div>
-                  </div>
-                  <a
-                    className="download-icon"
-                    href={post.url}
-                    download={post.filename}
+              {hasUrl &&
+                (isImg ? (
+                  <img src={post.url} alt="" />
+                ) : (
+                  <div
+                    className="file-preview"
+                    onClick={() => {
+                      window.open(post.url, "_blank");
+                    }}
                   >
-                    <MdDownload />
-                  </a>
-                </div>
-              )}
+                    <div className="left">
+                      <div className="file-icon">
+                        <img src={getFileImg(post.type, post.ext)} alt="" />
+                      </div>
+                      <div className="file-details">
+                        <p className="file-name">{post.filename}</p>
+                        <p className="file-size">{post.size / 1000} kb</p>
+                      </div>
+                    </div>
+                    <a
+                      className="download-icon"
+                      href={post.url}
+                      download={post.filename}
+                    >
+                      <MdDownload />
+                    </a>
+                  </div>
+                ))}
               <p className="caption">{post.caption}</p>
             </div>
           );

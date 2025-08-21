@@ -13,6 +13,9 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import axios from "axios";
 import getFileImg from "@utils/getFileIcon";
 import Popup from "@components/Popup";
+import axiosInstance from "@utils/axios";
+import { FaFrown, FaMeh, FaSmile } from "react-icons/fa";
+import { debounce } from "@utils/debounce";
 
 export default function UploadPage() {
   const [dragOver, setDragOver] = useState(false);
@@ -22,6 +25,7 @@ export default function UploadPage() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [caption, setCaption] = useState("");
   const [progress, setProgress] = useState(-1);
+  const [sentiment, setSentiment] = useState("");
   const timerRef = useRef<number>(-1);
   const [fileDetails, setFileDetails] = useState({
     name: "",
@@ -54,6 +58,17 @@ export default function UploadPage() {
       if (!dragOver) setDragOver(true);
     },
     [dragOver]
+  );
+  const getSentiment = useCallback(
+    debounce(async (text: string) => {
+      if (!text) return;
+      const response = await axios.post("http://127.0.0.1:5000/predict", {
+        text,
+      });
+      console.log(response.data);
+      setSentiment(response.data.sentiment);
+    }, 800),
+    []
   );
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -107,76 +122,108 @@ export default function UploadPage() {
     // if (fileDetails.isImg) {
     //   setIsCropping(true);
     // } else {
-    if (!caption || !selectedFile) {
+    if (!caption && !selectedFile) {
       setShowPopup(true);
       setError({
-        title: "All fields are required",
-        mssg: "Please select a file and enter a caption",
+        title: "Missing Fields",
+        mssg: "Either Caption or Image is required",
       });
       return;
     }
-    const fileBlob = await (await fetch(selectedFile as string)).blob();
-    const storgeRef = ref(storage, `posts/${Date.now()}-${fileDetails.name}`);
-    if (fileDetails.size < 400000)
-      timerRef.current = window.setInterval(() => {
-        setProgress((prv) => {
-          if (prv == 100) {
-            clearInterval(timerRef.current);
-            return -1;
-          }
-          if (prv + 10 <= 70) return Math.max(prv + 10, prv);
-          else {
-            clearInterval(timerRef.current);
-            return prv;
-          }
+    let sentimentValue = undefined;
+    if (caption) {
+      try {
+        const response = await axios.post("http://127.0.0.1:5000/predict", {
+          text: caption,
         });
-      }, 150);
-    uploadBytesResumable(storgeRef, fileBlob).on(
-      "state_changed",
-      (snapshot) => {
-        const p = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(Math.max(p - 10, 0));
-        console.log("Upload is " + p + "% done");
-      },
-      (error) => {},
-      async () => {
-        window.setTimeout(() => {
-          setProgress(95);
-        }, 80);
-        const url = await getDownloadURL(storgeRef);
-
-        axios.post(
-          `${import.meta.env.VITE_SERVER}/posts/upload/`,
-          {
-            url,
-            caption: caption,
-            size: fileDetails.size,
-            filename: fileDetails.name,
-            type: fileDetails.type,
-            ext: fileDetails.ext,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        window.setTimeout(() => {
-          setProgress(100);
-          window.setTimeout(() => {
-            setProgress(-1);
-          }, 150);
-        }, 120);
-        setSelectedFile("");
-        setImgSelected(false);
-        setFileDetails({
-          name: "",
-          ext: "",
-          isImg: false,
-          size: 0,
-          type: "",
-        });
+        console.log(response.data);
+        sentimentValue = response.data.sentiment;
+        setSentiment(sentimentValue);
+      } catch (e) {
+        console.warn(e);
       }
-    );
-    // }
+    }
+    if (selectedFile) {
+      const fileBlob = await (await fetch(selectedFile as string)).blob();
+      const storgeRef = ref(storage, `posts/${Date.now()}-${fileDetails.name}`);
+      if (fileDetails.size < 400000)
+        timerRef.current = window.setInterval(() => {
+          setProgress((prv) => {
+            if (prv == 100) {
+              clearInterval(timerRef.current);
+              return -1;
+            }
+            if (prv + 10 <= 70) return Math.max(prv + 10, prv);
+            else {
+              clearInterval(timerRef.current);
+              return prv;
+            }
+          });
+        }, 150);
+      uploadBytesResumable(storgeRef, fileBlob).on(
+        "state_changed",
+        (snapshot) => {
+          const p = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(Math.max(p - 10, 0));
+          console.log("Upload is " + p + "% done");
+        },
+        (error) => {},
+        async () => {
+          window.setTimeout(() => {
+            setProgress(95);
+          }, 80);
+          const url = await getDownloadURL(storgeRef);
+
+          axiosInstance.post(
+            `posts/upload/`,
+            {
+              url,
+              caption: caption,
+              size: fileDetails.size,
+              filename: fileDetails.name,
+              type: fileDetails.type,
+              ext: fileDetails.ext,
+              sentiment: sentimentValue,
+            },
+            {
+              withCredentials: true,
+            }
+          );
+          window.setTimeout(() => {
+            setProgress(100);
+            window.setTimeout(() => {
+              setProgress(-1);
+            }, 150);
+          }, 120);
+          reset();
+        }
+      );
+    } else {
+      axiosInstance.post(
+        `posts/upload/`,
+        {
+          caption: caption,
+          sentiment: sentimentValue,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      reset();
+    }
+  }
+
+  function reset() {
+    setSelectedFile("");
+    setImgSelected(false);
+    setFileDetails({
+      name: "",
+      ext: "",
+      isImg: false,
+      size: 0,
+      type: "",
+    });
+    // setSentiment("");
   }
 
   return (
@@ -270,7 +317,11 @@ export default function UploadPage() {
         autoCorrect="on"
         spellCheck={true}
         value={caption}
-        onChange={(e) => setCaption(e.target.value)}
+        onChange={(e) => {
+          if (e.target.value == "") setSentiment("");
+          setCaption(e.target.value);
+          getSentiment(e.target.value);
+        }}
       />
       <div className="actions">
         {imgSelected && fileDetails.isImg && (
@@ -278,6 +329,21 @@ export default function UploadPage() {
             Crop
             <div className="icon">
               <MdCropFree />
+            </div>
+          </button>
+        )}
+
+        {sentiment && (
+          <button className={`sentiment-btn ${sentiment}`}>
+            {sentiment}
+            <div className="icon">
+              {
+                {
+                  positive: <FaSmile />,
+                  negative: <FaFrown />,
+                  neutral: <FaMeh />,
+                }[sentiment]
+              }
             </div>
           </button>
         )}

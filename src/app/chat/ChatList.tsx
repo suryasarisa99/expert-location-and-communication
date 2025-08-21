@@ -9,10 +9,11 @@ import { useLocation, useNavigate, useNavigation } from "react-router-dom";
 import { FaArrowLeft, FaSearch, FaUser, FaUserTie } from "react-icons/fa";
 import useData from "@hooks/useData";
 import { AnimatePresence, easeIn, motion } from "framer-motion";
-import Popup from "./Popup";
-import ImgPopup from "./ImgPopup";
+import Popup from "@components/Popup";
+import ImgPopup from "@components/ImgPopup";
 import Fuse from "fuse.js";
 import { TutorSearchType } from "@src/types/StudentType";
+import axios from "axios";
 
 type ChatListProps = {
   isLgScreen: boolean;
@@ -37,33 +38,42 @@ export default function ChatList({
   const [query, setQuery] = useState("");
   const [showSearchBar, setShowSearchPage] = useState(false);
   const { newMssgs } = useData();
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setUserId(location.pathname.split("/")[2]);
   }, [location.pathname]);
   const userSearchRef = useRef<Fuse<TutorSearchType>>();
 
-  // useEffect(() => {
-  //   const requestUserLocation = () => {
-  //     if ("geolocation" in navigator) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         (position) => {
-  //           const l = {
-  //             latitude: position.coords.latitude,
-  //             longitude: position.coords.longitude,
-  //           };
-  //         },
-  //         (error) => {
-  //           console.error("Error obtaining location:", error);
-  //         }
-  //       );
-  //     } else {
-  //       console.log("Geolocation is not supported by this browser.");
-  //     }
-  //   };
+  useEffect(() => {
+    const requestUserLocation = () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const l = [position.coords.latitude, position.coords.longitude];
+            console.log("Location: ", l);
+            // axios.post(
+            //   `${import.meta.env.VITE_SERVER}/user/location-update`,
+            //   {
+            //     location: l,
+            //   },
+            //   {
+            //     withCredentials: true,
+            //   }
+            // );
+          },
+          (error) => {
+            console.error("Error obtaining location:", error);
+          }
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    };
 
-  //   requestUserLocation();
-  // });
+    // if login but user does not have location
+    if (data || currentTutor) requestUserLocation();
+  }, [data, currentTutor]);
 
   useLayoutEffect(() => {
     if (!scrollDivRef.current) return;
@@ -82,13 +92,13 @@ export default function ChatList({
         threshold: 0.4,
       });
     }
-  }, []);
+  }, [users]);
 
   // const users = users?.filter(
   //   (x) => x.status === "accepted"
   // );
   return (
-    <div className="chat-sidebar">
+    <div className="sidebar chat-sidebar">
       <ImgPopup
         show={showProfilePic}
         handleClose={() => setShowProfilePic(false)}
@@ -120,7 +130,7 @@ export default function ChatList({
         ></motion.img>
       </ImgPopup>
       {!showSearchBar ? (
-        <div className="chat-header">
+        <div className="sidebar-header chat-sidebar-header">
           <div className="title">
             @{role == 1 ? data?._id : currentTutor?._id}
           </div>
@@ -128,18 +138,22 @@ export default function ChatList({
             className="search-icon"
             onClick={() => {
               setShowSearchPage(true);
+              setTimeout(() => {
+                searchInputRef.current?.focus();
+              }, 100);
             }}
           >
             <FaSearch />
           </div>
         </div>
       ) : (
-        <div className="chat-header search-header">
+        <div className="sidebar-header chat-sidebar-header">
           <div className="input-container">
             <input
               placeholder="Search..."
               type="text"
               value={query}
+              ref={searchInputRef}
               onChange={(e) => setQuery(e.target.value)}
             />
             <div

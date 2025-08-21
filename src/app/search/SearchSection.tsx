@@ -5,12 +5,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaUser } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdShareLocation } from "react-icons/md";
+import axiosInstance from "@utils/axios";
 export default function SearchSection() {
   const skillRefs = useRef<HTMLDivElement[]>([]);
   const navigate = useNavigate();
   const { id } = useParams();
   const [tutorData, setTutorData] = useState<TutorType | null>(null);
   const { users } = useData();
+
   useEffect(() => {
     console.log("search section mounted");
     function setWidthSkillPieChart() {
@@ -20,7 +22,7 @@ export default function SearchSection() {
       });
     }
 
-    axios.get(`${import.meta.env.VITE_SERVER}/user/tutor/${id}`).then((res) => {
+    axiosInstance.get(`user/tutor/${id}`).then((res) => {
       console.log(res.data);
       setTutorData(res.data);
       setTimeout(() => {
@@ -65,7 +67,18 @@ export default function SearchSection() {
                 "-": "Follow",
               }[users.find((x) => x._id == id)?.status as string] || "Follow"}
             </button>
-            <p className="tutor-location">
+            <p
+              className="tutor-location"
+              onClick={() => {
+                const lat = tutorData.location.coordinates[1];
+                const long = tutorData.location.coordinates[0];
+                window.open(
+                  `https://www.google.com/maps?q=${lat},${long}`,
+                  "_blank"
+                );
+                // navigate()
+              }}
+            >
               <MdShareLocation />
             </p>
           </div>

@@ -12,6 +12,9 @@
 
 .profile-page {
   height: 100vh;
+  max-width: 1200px;
+  /* background-color: red; */
+  margin: 0 auto;
   .profile-top {
     padding: 18px 20px;
     gap: 30px;
@@ -24,12 +27,12 @@
   }
 
   .tutor-details {
-    // background-color: red;
+    /* background-color: red; */
     display: flex;
     gap: 20px;
 
     .details {
-      // background-color: rgb(102, 102, 142);
+      /* background-color: rgb(102, 102, 142); */
       min-width: 350px;
 
       h3 {
@@ -39,7 +42,7 @@
       & > div {
         display: flex;
         flex-direction: column;
-        // background-color: red;
+        /* background-color: red; */
         background-color: var(--accent-too-light);
         box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.1);
         padding: 8px 20px;
@@ -73,7 +76,7 @@
   }
 
   .details-selection-header {
-    // background-color: red;
+    /* background-color: red; */
     border-bottom: 2px solid var(--border);
     display: flex;
     gap: 15px;
@@ -88,6 +91,7 @@
       padding-bottom: 2px;
       margin-bottom: 4px;
       border-radius: 8px;
+      cursor: pointer;
 
       &.active {
         background-color: var(--highlight);
@@ -140,7 +144,7 @@
     height: 100%;
     display: flex;
     padding: 0 20px;
-    // width: 400px;
+    /* width: 400px; */
   }
   .actions {
     display: flex;

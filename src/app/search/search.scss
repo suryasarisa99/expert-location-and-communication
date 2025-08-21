@@ -11,10 +11,32 @@
 }
 
 .search-page {
-  display: flex;
+  @include lg-screen() {
+    height: 100vh;
+  }
+}
+
+.search-page-outer {
+  /* background-color: red; */
+  /* display: flex; */
+
+  @include lg-screen {
+    height: calc(100vh - 50px);
+    margin: 25px 20px;
+    margin-right: 20px;
+    padding: 20px;
+    padding-bottom: 0px;
+    border-radius: 14px;
+    box-shadow: 2px 0px 8px 2px rgba(158, 13, 13, 0.15);
+  }
 }
 
 .search-item {
+  flex-grow: 0;
+  &:last-child {
+    margin-bottom: 100px;
+  }
+
   .left {
     display: flex;
     align-items: center;
@@ -35,6 +57,7 @@
     font-size: 14px;
     min-width: 85px;
     padding: 7px 12px;
+    margin-right: 8px;
 
     &.accepted {
       background-color: var(--accent-light);
@@ -66,41 +89,44 @@
   }
 }
 
-.search-sidebar {
-  margin: 35px 0;
-  margin-top: 25px;
-  flex-shrink: 0;
-  border-radius: 8px;
+// .search-sidebar {
+//   /* margin: 35px 0; */
+//   /* margin-top: 25px; */
+//   flex-shrink: 0;
+//   border-radius: 8px;
+//   padding-top: 10px;
 
-  .search-list {
-    overflow-y: auto;
-    border-radius: 8px;
+//   .search-list {
+//     overflow-y: auto;
+//     /* border-radius: 8px; */
 
-    .search-list-item {
-      background-color: white;
-    }
-  }
+//     .search-list-item {
+//       background-color: white;
+//     }
+//   }
 
-  @include lg-screen {
-    // height: calc(100vh - 70px);
-    // box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
-    width: 400px;
-    .search-list {
-      box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
-      height: calc(100vh - 135px);
-    }
-  }
-  @include sm-screen {
-    // height: 100%;
-    margin: 0 0;
-    margin-top: 12px;
-    flex-grow: 1;
+//   @include lg-screen {
+//     // height: calc(100vh - 70px);
+//     // box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
+//     border-right: 1px solid var(--border);
+//     // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+//     width: 400px;
+//     .search-list {
+//       // box-shadow: 0 0 8px rgba(158, 13, 13, 0.1);
+//       height: calc(100vh - 50px - 135px);
+//     }
+//   }
+//   @include sm-screen {
+//     // height: 100%;
+//     margin: 0 0;
+//     margin-top: 12px;
+//     flex-grow: 1;
 
-    .search-list {
-      height: calc(100dvh - 130px);
-    }
-  }
-}
+//     .search-list {
+//       height: calc(100dvh - 130px);
+//     }
+//   }
+// }
 
 .search-bar {
   margin: 0 0px;
@@ -112,7 +138,7 @@
     font-size: 22px;
     padding: 12px 20px;
     padding-left: 50px;
-    // padding-right: 32px;
+    /* padding-right: 32px; */
     width: 100%;
   }
 
@@ -162,7 +188,7 @@
   display: flex;
   margin: 20px 20px;
   gap: 25px;
-  // justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
   flex-grow: 1;
 
@@ -189,7 +215,7 @@
     font-weight: 600;
     border-radius: 35px;
     padding: 8px 30px;
-    // width: 250px;
+    /* width: 250px; */
     width: 80%;
     max-width: 300px;
     flex-grow: 1;
@@ -200,7 +226,7 @@
     gap: 25px;
     align-items: center;
     margin-top: 15px;
-    // background-color: gray;
+    /* background-color: gray; */
     flex-grow: 1;
   }
   align-items: center;
@@ -228,11 +254,11 @@
 }
 .tutor-skills {
   display: flex;
-  //   background-color: green;
+  /* background-color: green; */
   gap: 15px;
   flex-wrap: wrap;
   display: grid;
-  grid-template-columns: repeat(4, minmax(110px, 280px));
+  grid-template-columns: repeat(4, minmax(110px, 210px));
   justify-content: center;
   align-content: center;
   align-items: center;
@@ -247,7 +273,7 @@
     padding: 8px 12px;
     width: 100%;
     border-radius: 6px;
-    // background-color: var(--highlight);
+    /* background-color: var(--highlight); */
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -260,7 +286,7 @@
     .pie {
       --c: var(--accent);
       --b: 20px;
-      //   background-color: rgb(201, 169, 169);
+      /* background-color: rgb(201, 169, 169); */
       width: var(--w);
       aspect-ratio: 1;
       position: relative;
@@ -324,7 +350,7 @@
   display: flex;
   gap: 25px;
   h3 {
-    // font-size: ;
+    /* font-size: ; */
     text-align: center;
     margin: 8px 20px;
   }

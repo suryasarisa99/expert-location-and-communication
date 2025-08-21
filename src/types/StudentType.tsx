@@ -3,14 +3,11 @@ export type StudentType = {
   name: string;
   img?: string;
   email: string;
-  // tutors: {
-  //   _id: string;
-  //   name: string;
-  //   // hasStartedChat: boolean;
-  //   // lastMssg: string;
-  //   // lastTime: string;
-  //   img?: string;
-  // }[];
+  about?: string;
+  address?: string;
+  location: {
+    coordinates: number[];
+  };
 };
 
 export type TutorSearchType = {
@@ -19,6 +16,13 @@ export type TutorSearchType = {
   status: string;
   img?: string;
   isOnline?: boolean;
+
+  skills?: string[];
+  latitude?: number;
+  longitude?: number;
+  distance?: number;
+  address?: string;
+  about?: string;
 };
 
 export type TutorType = {
@@ -49,6 +53,9 @@ export type TutorType = {
     from: number;
     to: number;
   }[];
+  location: {
+    coordinates: number[];
+  };
 };
 
 export type MssgType = {
@@ -56,4 +63,5 @@ export type MssgType = {
   mssg: string;
   time: string;
   img?: string;
+  ai: boolean;
 };

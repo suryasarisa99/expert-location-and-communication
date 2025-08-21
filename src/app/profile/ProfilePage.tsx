@@ -13,6 +13,7 @@ import {
   FaStar,
   FaRegStar,
 } from "react-icons/fa6";
+import { socket } from "@context/Data/DataContext";
 
 export default function ProfilePage({ isLgScreen }: { isLgScreen: boolean }) {
   const navigate = useNavigate();
@@ -138,7 +139,7 @@ export default function ProfilePage({ isLgScreen }: { isLgScreen: boolean }) {
         }}
       />
 
-      {!isLgScreen && (
+      {!isLgScreen && role == 0 && (
         <div className="details-selection-header">
           {icons.map((icon, i) => (
             <div
@@ -219,6 +220,7 @@ export default function ProfilePage({ isLgScreen }: { isLgScreen: boolean }) {
       <button
         onClick={() => {
           localStorage.clear();
+          socket.disconnect();
           navigate("/signin");
         }}
       >

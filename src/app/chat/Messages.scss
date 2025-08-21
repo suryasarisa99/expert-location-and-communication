@@ -1,0 +1,225 @@
+@mixin lg-screen {
+  @media (min-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin md-screen {
+  @media (max-width: 1350px) {
+    @content;
+  }
+}
+
+@mixin sm-screen {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
+
+.chat-section {
+  flex-grow: 1;
+  height: 100%;
+  .chat-top-bar {
+    // background-color: yellowgreen;
+    display: flex;
+    height: var(--chat-top-bar-height);
+    border-top-right-radius: var(--chat-border-radius);
+    // background-color: var(--accent-too-light);
+    z-index: 2;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-bottom {
+    display: flex;
+    // background-color: chartreuse;
+    height: var(--chat-bottom-bar-height);
+    border-bottom-right-radius: var(--chat-border-radius);
+    // background-color: var(--accent-too-light);
+  }
+}
+
+.mssgs {
+  height: calc(--chat-top-bar-height);
+  padding-inline: 50px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  // flex-direction: column-reverse;
+  gap: 8px;
+
+  .mssg {
+    padding: 4px 16px;
+    font-size: 22px;
+    // border-radius: 12px;
+    box-shadow: 0px 0px 6px 0px rgb(0, 0, 0, 0.15);
+    max-width: 85%;
+    position: relative;
+    // z-index: -1;
+
+    &.img-mssg {
+      padding: 12px;
+      .img {
+        width: 400px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+    }
+    .ai-mssg {
+      background-color: var(--accent-to-light);
+      font-size: 12px;
+      font-variant: small-caps;
+      font-style: italic;
+      width: fit-content;
+      padding: 2px 8px;
+      border-radius: 8px;
+      position: absolute;
+      top: -10px;
+      width: 120px;
+      box-shadow: 0px 0px 3px 0px rgb(0, 0, 0, 0.1);
+      // left: 20px;
+    }
+
+    &.right-mssg {
+      align-self: flex-end;
+      background-color: var(--accent-too-light);
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 12px;
+      border-bottom-left-radius: 12px;
+      border-top-left-radius: 12px;
+
+      .ai-mssg {
+        right: 10px;
+      }
+    }
+    &.left-mssg {
+      background-color: var(--accent-light);
+      align-self: flex-start;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      border-bottom-left-radius: 12px;
+      border-top-left-radius: 1px;
+      text-align: left;
+
+      .ai-mssg {
+        left: 20px;
+      }
+    }
+    &:has(.ai-mssg) {
+      padding-top: 16px;
+      margin-top: 12px;
+    }
+
+    .mssg-time {
+      font-size: 13px;
+    }
+  }
+
+  // .mssgs
+  @include sm-screen() {
+    padding-inline: 24px;
+    padding-bottom: 20px;
+    .mssg {
+      font-size: 18px;
+
+      &.img-mssg {
+        padding: 12px;
+        padding-bottom: 7px;
+        .img {
+          width: 60vw;
+          border-radius: 8px;
+          aspect-ratio: 1;
+          object-fit: cover;
+          // height: 40vh;
+        }
+      }
+    }
+  }
+}
+
+.chat-bottom {
+  margin: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .inner {
+    width: 70%;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .input-div {
+    flex-grow: 1;
+    // box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+    // background-color: var(--main-input-bg);
+    background-color: var(--input-bg);
+    box-shadow: -3px 4px 6px 1px var(--shadow-clr);
+    border-radius: 32px;
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .send-btn {
+    background-color: var(--highlight);
+    box-shadow: -4px 4px 2px 1px var(--shadow-clr);
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    padding-left: 4px;
+    justify-content: center;
+    align-items: center;
+    font-size: 23px;
+    color: var(--accent-dark);
+  }
+
+  input[type="text"],
+  textarea {
+    background-color: transparent;
+    border: none;
+    border-radius: 35px;
+    display: inline-block;
+    padding: 16px 20px;
+    padding-left: 28px;
+    font-size: 20px;
+    width: 100%;
+    resize: none;
+
+    // max-height: 120px; /* Adjust based on your line-height */
+    // overflow-y: auto;
+    // /* Additional styles for consistent appearance across browsers */
+    // resize: none; /* Optional: Prevents resizing */
+    // line-height: 20px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+  input[type="file"] {
+    display: none;
+  }
+
+  @media (max-width: 1200px) {
+    .inner {
+      width: 100% !important;
+    }
+  }
+
+  @include sm-screen() {
+    .inner {
+      width: 100%;
+      .input-div {
+        height: 45px;
+        padding: 0px;
+      }
+      input[type="text"],
+      textarea {
+        font-size: 18px;
+      }
+    }
+  }
+}

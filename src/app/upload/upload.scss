@@ -110,9 +110,34 @@
         color: var(--on-accent);
         font-weight: 600;
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        border: none;
 
         .icon {
           padding-top: 2px;
+        }
+        &:active {
+          background-color: var(--accent-md);
+          // scale: 1.03;
+        }
+      }
+
+      &.sentiment-btn {
+        border: none;
+        &:hover {
+          outline: none;
+          border: none;
+        }
+        &.positive {
+          background-color: var(--positive);
+          color: var(--on-positive);
+        }
+        &.negative {
+          background-color: var(--negative);
+          color: var(--on-negative);
+        }
+        &.neutral {
+          background-color: var(--neutral);
+          color: var(--on-neutral);
         }
       }
     }
