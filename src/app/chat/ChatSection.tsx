@@ -23,6 +23,7 @@ import { CopyIcon } from "lucide-react";
 import { socket } from "@context/Data/DataContext";
 import Message from "./Message";
 import LoadingSpinner from "@components/LoadingSpinner";
+import Messages from "./Messages";
 
 export default function ChatSection({ isLgScreen }: { isLgScreen: boolean }) {
   const { id } = useParams();
@@ -67,6 +68,23 @@ export default function ChatSection({ isLgScreen }: { isLgScreen: boolean }) {
         setMessages(res.data.messages);
       })
       .finally(() => setLoading(false));
+
+    //scroll to bottom
+    setTimeout(() => {
+      if (!isLgScreen) {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "instant", // optional
+        });
+      } else {
+        const scrollElm = document.querySelector(".container-page")!;
+
+        scrollElm!.scrollTo({
+          top: scrollElm.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }, 400);
   }, [id]);
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -241,21 +259,29 @@ export default function ChatSection({ isLgScreen }: { isLgScreen: boolean }) {
         // <div className="loading"> loading...</div>
         <LoadingSpinner fullscreen absolute={isLgScreen} />
       ) : (
-        <div className="mssgs" ref={scrollDivRef}>
-          {messages.map((mssg, i) => {
-            return (
-              <Message
-                key={i}
-                mssg={mssg}
-                role={role}
-                selectedText={selectedText}
-                progress={progress}
-                i={i}
-                len={messages.length}
-              />
-            );
-          })}
-        </div>
+        // <div className="mssgs" ref={scrollDivRef}>
+        //   {messages.map((mssg, i) => {
+        //     return (
+        //       <Message
+        //         key={i}
+        //         mssg={mssg}
+        //         role={role}
+        //         selectedText={selectedText}
+        //         progress={progress}
+        //         i={i}
+        //         len={messages.length}
+        //       />
+        //     );
+        //   })}
+        // </div>
+        <Messages
+          messages={messages}
+          scrollDivRef={scrollDivRef}
+          role={role}
+          selectedText={selectedText}
+          progress={progress}
+          isLgScreen={isLgScreen}
+        />
       )}
       <form onSubmit={onMssgSubmit} className="chat-bottom">
         <input
