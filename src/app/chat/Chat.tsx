@@ -67,7 +67,10 @@ export default function Chat({ isLgScreen }: { isLgScreen: boolean }) {
           </>
         )}
         <Routes>
-          <Route path="/:id" element={<ChatSection />} />
+          <Route
+            path="/:id"
+            element={<ChatSection isLgScreen={isLgScreen} />}
+          />
           <Route path="/:id/profile" element={<SearchSection />} />
         </Routes>
       </div>

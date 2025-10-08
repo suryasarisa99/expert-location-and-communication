@@ -22,8 +22,9 @@ import { ContextMenu } from "../../components/ContextMenu";
 import { CopyIcon } from "lucide-react";
 import { socket } from "@context/Data/DataContext";
 import Message from "./Message";
+import LoadingSpinner from "@components/LoadingSpinner";
 
-export default function ChatSection() {
+export default function ChatSection({ isLgScreen }: { isLgScreen: boolean }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [imgPickedMode, setImgPickedMode] = useState(false);
@@ -33,6 +34,7 @@ export default function ChatSection() {
   const scrollDivRef = useRef<HTMLDivElement>(null);
   const { role, selectedFile, setSelectedFile } = useData();
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const [fileDetails, setFileDetails] = useState({
     name: "",
     size: 0,
@@ -54,6 +56,7 @@ export default function ChatSection() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     console.log("fetching messages");
     axiosInstance
       .get(`user/mssgs/${id}`, {
@@ -62,7 +65,8 @@ export default function ChatSection() {
       .then((res) => {
         console.log(res.data);
         setMessages(res.data.messages);
-      });
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -233,21 +237,26 @@ export default function ChatSection() {
         </div>
         <TbDotsVertical />
       </div>
-      <div className="mssgs" ref={scrollDivRef}>
-        {messages.map((mssg, i) => {
-          return (
-            <Message
-              key={i}
-              mssg={mssg}
-              role={role}
-              selectedText={selectedText}
-              progress={progress}
-              i={i}
-              len={messages.length}
-            />
-          );
-        })}
-      </div>
+      {loading ? (
+        // <div className="loading"> loading...</div>
+        <LoadingSpinner fullscreen absolute={isLgScreen} />
+      ) : (
+        <div className="mssgs" ref={scrollDivRef}>
+          {messages.map((mssg, i) => {
+            return (
+              <Message
+                key={i}
+                mssg={mssg}
+                role={role}
+                selectedText={selectedText}
+                progress={progress}
+                i={i}
+                len={messages.length}
+              />
+            );
+          })}
+        </div>
+      )}
       <form onSubmit={onMssgSubmit} className="chat-bottom">
         <input
           type="file"
