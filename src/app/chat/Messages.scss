@@ -20,17 +20,16 @@
   flex-grow: 1;
   height: 100%;
   .chat-top-bar {
-    // background-color: yellowgreen;
     display: flex;
     height: var(--chat-top-bar-height);
     border-top-right-radius: var(--chat-border-radius);
+    background-color: var(--bg);
     // background-color: var(--accent-too-light);
     z-index: 2;
     border-bottom: 1px solid var(--border);
   }
   .chat-bottom {
     display: flex;
-    // background-color: chartreuse;
     height: var(--chat-bottom-bar-height);
     border-bottom-right-radius: var(--chat-border-radius);
     // background-color: var(--accent-too-light);
@@ -163,7 +162,7 @@
     display: flex;
   }
 
-  .send-btn {
+  .round-icon-btn {
     background-color: var(--highlight);
     box-shadow: -4px 4px 2px 1px var(--shadow-clr);
     border-radius: 50%;
@@ -175,6 +174,13 @@
     align-items: center;
     font-size: 23px;
     color: var(--accent-dark);
+
+    &.send-btn {
+      font-size: 23px;
+    }
+    &.share-btn {
+      font-size: 28px;
+    }
   }
 
   input[type="text"],
@@ -219,6 +225,18 @@
       input[type="text"],
       textarea {
         font-size: 18px;
+      }
+    }
+    .round-icon-btn {
+      flex-shrink: 0;
+      width: 45px;
+      height: 45px;
+      box-shadow: -2.5px 2.5px 2px 1px var(--shadow-clr);
+      &.send-btn {
+        font-size: 17px;
+      }
+      &.share-btn {
+        font-size: 22px;
       }
     }
   }

@@ -109,16 +109,14 @@ export default function ProfilePage({ isLgScreen }: { isLgScreen: boolean }) {
             currentTutor?.img ? (
               <img src={currentTutor?.img} />
             ) : (
-              <div className="icon-outer">
-                <FaUserTie />
-              </div>
+              <FaUserTie />
             )
           ) : data?.img ? (
             <img src={data?.img} />
           ) : (
-            <div className="icon-outer">
-              <FaUser />
-            </div>
+            <FaUser />
+            // <div className="icon-outer">
+            // </div>
           )}
         </div>
         <div className="profile-info">

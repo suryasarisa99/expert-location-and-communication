@@ -160,12 +160,29 @@
     height: calc(100dvh - 66.6px - 62px);
 
     .chat-list-item {
-      border-radius: 8px;
-      margin-bottom: 8px;
-      box-shadow: 0px 0px 6px 0px rgba(79, 59, 59, 0.1);
-      padding: 10px 18px;
-      padding-left: 12px;
-      padding-right: 16px;
+      padding: 12px 18px;
+      border: none;
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        height: 1px;
+        width: 100%;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent-txt),
+          rgb(from var(--accent-txt) r g b / 0.5),
+          transparent,
+          transparent
+        );
+      }
       background-color: var(--chat-list-item-bg);
 
       gap: 18px;
@@ -187,7 +204,6 @@
     padding: 10px 20px;
     align-items: center;
     box-shadow: 0px 2px 4px 0px #0000001b;
-
     padding: 6px 18px;
     margin: 0px;
 

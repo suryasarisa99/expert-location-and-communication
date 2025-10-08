@@ -120,6 +120,13 @@
   @include sm-screen {
     padding: 0;
     height: calc(100dvh - 62px);
+
+    .profile-pic {
+      height: 110px;
+      width: 110px;
+      border-radius: 55px;
+      font-size: 50px;
+    }
   }
 }
 

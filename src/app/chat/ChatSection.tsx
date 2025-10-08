@@ -270,7 +270,7 @@ export default function ChatSection() {
             />
           </div>
           <button
-            className="icon-btn send-btn"
+            className="round-icon-btn icon-btn share-btn"
             type="button"
             onClick={() => {
               fileInputRef.current?.click();
@@ -278,7 +278,7 @@ export default function ChatSection() {
           >
             <AiOutlinePaperClip />
           </button>
-          <button className="icon-btn send-btn">
+          <button className="round-icon-btn icon-btn send-btn">
             <IoSend />
           </button>
         </div>

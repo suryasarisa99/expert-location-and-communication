@@ -61,7 +61,8 @@
     --chat-list-item-bg: transparent;
     --avatar-bg: var(--accent-light);
     --dimmed-txt-clr: #666;
-    --bg: #3b3438;
+    --bg-light: #3b3438;
+    --bg: #1e1a1c;
     --bg-from: #292429;
     // --bg-from: #232222;
     --bg-to: #120e11;
@@ -403,7 +404,7 @@ input[type="checkbox"] {
         border-radius: 20px;
       }
 
-      .send-icon {
+      .round-icon-btn {
         padding: 6px 11px;
         padding-top: 11px;
         padding-left: 15px;
@@ -500,14 +501,14 @@ progress {
 }
 
 :root {
-  --background: #f5f5f5;
-  --popup-surface: #fff;
+  // --background: #f5f5f5;
+  // --popup-surface: #fff;
   --overlay: #16161691;
   --overlay: red;
-  --shadow: 0px 0px 25px 0px rgba(16, 16, 16, 0.279);
-  --light-shadow: 0px 0px 5px 5px rgba(16, 16, 16, 0.109);
+  // --shadow: 0px 0px 25px 0px rgba(16, 16, 16, 0.279);
+  // --light-shadow: 0px 0px 5px 5px rgba(16, 16, 16, 0.109);
   --blur: 2px;
-  --border-clr: #ccc;
+  // --border-clr: #ccc;
 }
 
 #context-overlay {
@@ -519,24 +520,24 @@ progress {
   bottom: 0;
 }
 .context-menu {
-  background-color: var(--popup-surface);
+  background-color: var(--bg-light);
   border-radius: 6px;
-  border: 1px solid var(--border-clr);
-  box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  box-shadow: 2px 2px 5px 0px var(--shadow-clr);
   z-index: 2;
 }
 .context-menu-item {
-  padding: 5px 12px;
+  padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.2s;
   font-size: 13px;
   z-index: 3;
   &:not(:last-child) {
-    border-bottom: 1px solid var(--border-clr);
+    border-bottom: 1px solid var(--border);
   }
 
   &:hover {
-    background-color: var(--background);
+    background-color: var(--bg);
     border-radius: 0px;
     &:first-child {
       border-top-left-radius: 6px;
